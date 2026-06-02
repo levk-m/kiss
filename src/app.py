@@ -6,6 +6,15 @@ from textual.highlight import guess_language
 from textual.widgets import TextArea, DirectoryTree
 
 class Kiss(App):
+    TITLE = "KISS"
+
+    CSS = """
+    DirectoryTree {
+        dock: left;
+        width: 25%;
+        border: round black;
+    }
+    """
 
     BINDINGS = [
         ("ctrl+s", "save_file"),
@@ -23,6 +32,14 @@ class Kiss(App):
             DirectoryTree(self.folder)
         )
 
+    def on_mount(self):
+        self.theme = "tokyo-night"
+
+    def on_error(self, event):
+        event.prevent_default()
+        self.notify("Ops, error!\nYou can create an issue on github)", severity="error")
+        self.exit()
+
     def _on_directory_tree_file_selected(self, event):
         path: Path = event.path
         if not path.is_file():
@@ -34,6 +51,7 @@ class Kiss(App):
 
         language_name = guess_language(text_editor.text, self.file)
         text_editor.language = language_name
+        text_editor.theme="dracula"
 
     def action_save_file(self):
         if self.file is None:
