@@ -1,9 +1,13 @@
 from argparse import ArgumentParser
 from pathlib import Path
-from textual.app import App
+from typing import Iterable
+
+from textual.app import App, SystemCommand
 from textual.containers import Horizontal
 from textual.highlight import guess_language
+from textual.screen import Screen
 from textual.widgets import TextArea, DirectoryTree
+
 
 class Kiss(App):
     TITLE = "KISS"
@@ -16,10 +20,7 @@ class Kiss(App):
     }
     """
 
-    BINDINGS = [
-        ("ctrl+s", "save_file"),
-        ("ctrl+q", "quit")
-    ]
+    BINDINGS = [("ctrl+s", "save_file"), ("ctrl+q", "quit")]
 
     def __init__(self, folder):
         super().__init__()
@@ -27,13 +28,15 @@ class Kiss(App):
         self.file = None
 
     def compose(self):
-        yield Horizontal(
-            TextArea("", id="editor"),
-            DirectoryTree(self.folder)
-        )
+        yield Horizontal(TextArea("", id="editor"), DirectoryTree(self.folder))
 
     def on_mount(self):
         self.theme = "tokyo-night"
+
+    def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:
+        for cmd in super().get_system_commands(screen):
+            if cmd.title in ["Theme", "Quit"]:
+                yield cmd
 
     def on_error(self, event):
         event.prevent_default()
@@ -51,7 +54,7 @@ class Kiss(App):
 
         language_name = guess_language(text_editor.text, self.file)
         text_editor.language = language_name
-        text_editor.theme="dracula"
+        text_editor.theme = "dracula"
 
     def action_save_file(self):
         if self.file is None:
@@ -59,7 +62,8 @@ class Kiss(App):
         editor = self.query_one("#editor")
         self.file.write_text(editor.text)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     parser = ArgumentParser("KISS")
     parser.add_argument("folder", type=Path)
 
