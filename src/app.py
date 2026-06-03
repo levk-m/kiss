@@ -9,6 +9,7 @@ from textual.screen import Screen
 from textual.widgets import TextArea, DirectoryTree, Footer, Label
 
 from commands import SearchProvider
+from dialogs import ErrorDialog
 from screens import StartScreen
 
 
@@ -57,29 +58,34 @@ class Kiss(App):
 
     def on_error(self, event):
         event.prevent_default()
-        self.notify("Ops, error!", severity="error")
-        self.exit()
+        self.app.push_screen(ErrorDialog("Ops", "an error occurred"))
 
     def _on_directory_tree_file_selected(self, event):
         path: Path = event.path
         self.edit_file(path)
 
     def edit_file(self, path):
-        if not path.is_file():
-            return
-        self.file = path
-        text_editor = self.query_one("#editor")
-        text_editor.text = self.file.read_text()
+        try:
+            if not path.is_file():
+                return
+            self.file = path
+            text_editor = self.query_one("#editor")
+            text_editor.text = self.file.read_text()
 
-        language_name = guess_language(text_editor.text, self.file)
-        text_editor.language = language_name
-        text_editor.theme = "dracula"
+            language_name = guess_language(text_editor.text, self.file)
+            text_editor.language = language_name
+            text_editor.theme = "dracula"
 
-        text_editor.show_line_numbers = True
-        text_editor.wrap_mode = "word"
+            text_editor.show_line_numbers = True
+            text_editor.wrap_mode = "word"
 
-        text_editor.indent_type = "spaces"
-        text_editor.indent_width = 4
+            text_editor.indent_type = "spaces"
+            text_editor.indent_width = 4
+
+        except Exception:
+            self.app.push_screen(
+                ErrorDialog("Ops!", "an error occurred, KISS cant open this file")
+            )
 
     def action_save_file(self):
         if self.file is None:
