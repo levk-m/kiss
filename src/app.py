@@ -75,6 +75,12 @@ class Kiss(App):
         text_editor.language = language_name
         text_editor.theme = "dracula"
 
+        text_editor.show_line_numbers = True
+        text_editor.wrap_mode = "word"
+
+        text_editor.indent_type = "spaces"
+        text_editor.indent_width = 4
+
     def action_save_file(self):
         if self.file is None:
             return
