@@ -9,7 +9,7 @@ from textual.screen import Screen
 from textual.widgets import TextArea, DirectoryTree, Footer, Label
 
 from commands import SearchProvider
-from screens import SplashScreen
+from screens import StartScreen
 
 
 class Kiss(App):
@@ -47,7 +47,7 @@ class Kiss(App):
 
     def on_mount(self):
         self.theme = "tokyo-night"
-        self.push_screen(SplashScreen())
+        self.push_screen(StartScreen())
         self.set_timer(0.5, self.pop_screen)
 
     def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:

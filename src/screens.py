@@ -3,7 +3,7 @@ from textual.widgets import Label
 import pyfiglet
 
 
-class SplashScreen(Screen):
+class StartScreen(Screen):
     CSS = """
         SplashScreen {
             align: center middle;
