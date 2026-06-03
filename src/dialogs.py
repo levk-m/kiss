@@ -1,10 +1,14 @@
+import webbrowser
+
 from rich.text import TextType
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Vertical, Center
+from textual.containers import Vertical, Center, VerticalScroll
 from textual.screen import ModalScreen
-from textual.widgets import Static, Button
+from textual.widgets import Static, Button, Markdown
 from textual.widgets._button import ButtonVariant
+
+from data.help_md import HELP
 
 
 class TextDialog(ModalScreen[None]):
@@ -82,3 +86,48 @@ class ErrorDialog(TextDialog):
     @property
     def button_style(self) -> ButtonVariant:
         return "error"
+
+
+class HelpDialog(ModalScreen[None]):
+    DEFAULT_CSS = """
+        HelpDialog {
+            align: center middle;
+        }
+
+        HelpDialog > Vertical {
+            border: thick $primary 50%;
+            width: 80%;
+            height: 80%;
+            background: $boost;
+        }
+
+        HelpDialog > Vertical > VerticalScroll {
+            height: 1fr;
+            margin: 1 2;
+        }
+
+        HelpDialog > Vertical > Center {
+            padding: 1;
+            height: auto;
+        }
+    """
+
+    BINDINGS = [Binding("escape, ctrl+h", "dismiss(None)", "", show=True)]
+
+    def compose(self) -> ComposeResult:
+        with Vertical():
+            with VerticalScroll():
+                yield Markdown(HELP)
+            with Center():
+                yield Button("Close", variant="primary")
+
+    def on_mount(self) -> None:
+        self.query_one(Markdown).can_focus_children = False
+        self.query_one("Vertical > VerticalScroll").focus()
+
+    def on_button_pressed(self) -> None:
+        self.dismiss(None)
+
+    def on_markdown_link_clicked(self, event) -> None:
+        # just open in browser
+        webbrowser.open(event.href)

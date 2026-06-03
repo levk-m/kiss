@@ -6,10 +6,10 @@ from textual.app import App, SystemCommand
 from textual.containers import Horizontal
 from textual.highlight import guess_language
 from textual.screen import Screen
-from textual.widgets import TextArea, DirectoryTree, Footer, Label
+from textual.widgets import TextArea, DirectoryTree, Footer, Label, Markdown
 
 from commands import SearchProvider
-from dialogs import ErrorDialog
+from dialogs import ErrorDialog, HelpDialog
 from screens import StartScreen
 
 
@@ -35,6 +35,7 @@ class Kiss(App):
         ("ctrl+s", "save_file"),
         ("ctrl+q", "quit"),
         ("ctrl+p", "command_palette"),
+        ("ctrl+h", "help"),
     ]
 
     def __init__(self, folder):
@@ -92,6 +93,9 @@ class Kiss(App):
             return
         editor = self.query_one("#editor")
         self.file.write_text(editor.text)
+
+    def action_help(self) -> None:
+        self.app.push_screen(HelpDialog())
 
 
 if __name__ == "__main__":
