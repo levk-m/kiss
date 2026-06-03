@@ -3,11 +3,12 @@ from pathlib import Path
 from typing import Iterable
 
 from textual.app import App, SystemCommand
+from textual.binding import Binding
 from textual.containers import Horizontal
 from textual.highlight import guess_language
 from textual.screen import Screen
 from textual.widgets import TextArea, DirectoryTree, Footer, Label, Markdown
-
+from textual.command import CommandPalette
 from commands import SearchProvider
 from dialogs import ErrorDialog, HelpDialog
 from screens import StartScreen
@@ -32,10 +33,14 @@ class Kiss(App):
     COMMANDS = App.COMMANDS | {SearchProvider}
 
     BINDINGS = [
-        ("ctrl+s", "save_file"),
-        ("ctrl+q", "quit"),
-        ("ctrl+p", "command_palette"),
-        ("ctrl+h", "help"),
+        Binding(
+            key="ctrl+s", action="save_file", description="Save new changes", show=False
+        ),
+        Binding(key="ctrl+q", action="quit", description="quit"),
+        Binding(
+            key="ctrl+p", action="command_palette", description="commands", show=False
+        ),
+        Binding(key="ctrl+h", action="help", description="help"),
     ]
 
     def __init__(self, folder):
@@ -96,6 +101,10 @@ class Kiss(App):
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
+
+    def action_command_palette(self) -> None:
+        # just change placeholder
+        self.push_screen(CommandPalette(placeholder="Search files and commands..."))
 
 
 if __name__ == "__main__":

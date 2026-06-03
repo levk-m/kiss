@@ -5,11 +5,11 @@ import pyfiglet
 
 class StartScreen(Screen):
     CSS = """
-        SplashScreen {
+        StartScreen {
             align: center middle;
             background: $background;
         }
-        SplashScreen Label {
+        StartScreen Label {
             color: $accent;
         }
         """

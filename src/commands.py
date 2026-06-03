@@ -32,3 +32,11 @@ class SearchProvider(Provider):
                     command=partial(self.app.edit_file, path),
                     help="Open file in KISS",
                 )
+
+        if matcher.match("help") > 0:
+            yield Hit(
+                score=0.5,
+                match_display=matcher.highlight("help"),
+                command=partial(self.app.action_help),
+                help="Show help dialog",
+            )
