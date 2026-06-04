@@ -102,9 +102,6 @@ class Kiss(App):
 
             self.file = path
 
-            footer = self.query_one(StatusBar)
-            footer.edit_status = f"EDIT {self.file if self.file else ''}"
-
             text_editor = self.query_one("#editor")
             text_editor.text = self.file.read_text()
 

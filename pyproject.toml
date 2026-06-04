@@ -9,3 +9,9 @@ dependencies = [
     "ruff>=0.15.15",
     "textual[syntax]>=8.2.7",
 ]
+
+[tool.uv.workspace]
+members = [
+    "trash/TerMan",
+    "trash/TermEdit",
+]

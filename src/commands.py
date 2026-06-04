@@ -11,7 +11,7 @@ class SearchProvider(Provider):
         while folders:
             folder = folders.pop()
             for file in folder.iterdir():
-                if file.name.startswith("."):
+                if file.name.startswith((".", "_")):
                     # skip
                     continue
                 if file.is_dir():
