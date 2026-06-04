@@ -8,7 +8,7 @@ from textual.screen import ModalScreen
 from textual.widgets import Static, Button, Markdown
 from textual.widgets._button import ButtonVariant
 
-from data.help_md import HELP
+from src.data.help_md import HELP
 
 
 class TextDialog(ModalScreen[None]):

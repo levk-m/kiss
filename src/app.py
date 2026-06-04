@@ -1,20 +1,24 @@
+import os
+import sys
 from argparse import ArgumentParser
 from pathlib import Path
 from typing import Iterable
 
 from textual import events
-from textual.app import App, SystemCommand, ComposeResult
+from textual.app import App, ComposeResult, SystemCommand
 from textual.binding import Binding
+from textual.command import CommandPalette
 from textual.containers import Horizontal
 from textual.css.query import NoMatches
 from textual.highlight import guess_language
 from textual.reactive import reactive
 from textual.screen import Screen
-from textual.widgets import TextArea, DirectoryTree, Footer, Label, Markdown
-from textual.command import CommandPalette
-from commands import SearchProvider
-from dialogs import ErrorDialog, HelpDialog
-from screens import StartScreen
+from textual.widgets import DirectoryTree, Footer, Input, Label, Markdown, TextArea
+
+from src.commands import SearchProvider
+from src.dialogs import ErrorDialog, HelpDialog
+from src.screens import StartScreen
+from src.config import load_config, update_config_theme
 
 
 class StatusBar(Horizontal):
@@ -48,7 +52,7 @@ class Kiss(App):
         dock: top;
         height: 1;
         background: $surface;
-    } 
+    }
     """
 
     COMMANDS = App.COMMANDS | {SearchProvider}
@@ -75,7 +79,7 @@ class Kiss(App):
         yield Footer()
 
     def on_mount(self):
-        self.theme = "tokyo-night"
+        self.theme = load_config().get("theme", "tokyo-night")
         self.push_screen(StartScreen())
         self.set_timer(0.5, self.pop_screen)
 
@@ -157,3 +161,5 @@ if __name__ == "__main__":
 
     app = Kiss(folder=folder)
     app.run()
+    print(f"Финальная тема: {app.theme}")
+    update_config_theme(app.theme)
