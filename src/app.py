@@ -2,16 +2,32 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import Iterable
 
-from textual.app import App, SystemCommand
+from textual import events
+from textual.app import App, SystemCommand, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal
+from textual.css.query import NoMatches
 from textual.highlight import guess_language
+from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widgets import TextArea, DirectoryTree, Footer, Label, Markdown
 from textual.command import CommandPalette
 from commands import SearchProvider
 from dialogs import ErrorDialog, HelpDialog
 from screens import StartScreen
+
+
+class StatusBar(Horizontal):
+    edit_status = reactive("EDIT")
+
+    def compose(self) -> ComposeResult:
+        yield Label(self.edit_status, id="status-label")
+
+    def watch_edit_status(self, status: str) -> None:
+        try:
+            self.query_one("#status-label").update(status)
+        except NoMatches:
+            pass
 
 
 class Kiss(App):
@@ -28,6 +44,11 @@ class Kiss(App):
         width: 75%;
         border: round black;
     }
+    StatusBar {
+        dock: top;
+        height: 1;
+        background: $surface;
+    } 
     """
 
     COMMANDS = App.COMMANDS | {SearchProvider}
@@ -49,6 +70,7 @@ class Kiss(App):
         self.file = None
 
     def compose(self):
+        yield StatusBar()
         yield Horizontal(TextArea("", id="editor"), DirectoryTree(self.folder))
         yield Footer()
 
@@ -67,6 +89,9 @@ class Kiss(App):
         self.app.push_screen(ErrorDialog("Ops", "an error occurred"))
 
     def _on_directory_tree_file_selected(self, event):
+        footer = self.query_one(StatusBar)
+        footer.edit_status = "FILE SELECTION"
+
         path: Path = event.path
         self.edit_file(path)
 
@@ -74,7 +99,12 @@ class Kiss(App):
         try:
             if not path.is_file():
                 return
+
             self.file = path
+
+            footer = self.query_one(StatusBar)
+            footer.edit_status = f"EDIT {self.file if self.file else ''}"
+
             text_editor = self.query_one("#editor")
             text_editor.text = self.file.read_text()
 
@@ -105,6 +135,14 @@ class Kiss(App):
     def action_command_palette(self) -> None:
         # just change placeholder
         self.push_screen(CommandPalette(placeholder="Search files and commands..."))
+
+    def on_key(self, event: events.Key) -> None:
+        if event.key in ["tab", "shift+tab"]:
+            footer = self.query_one(StatusBar)
+            if footer.edit_status != "FILE SELECTION":
+                footer.edit_status = "FILE SELECTION"
+            else:
+                footer.edit_status = f"EDIT {self.file if self.file else ''}"
 
 
 if __name__ == "__main__":
