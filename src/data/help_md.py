@@ -64,5 +64,5 @@ Github repo [click](https://github.com/MarkLevkovich/keepiss)
 | Ctrl+Q | Quit |
 | Ctrl+S | Save |
 | Ctrl+P | Command Palette (where u can search files and change theme) |
-
+| Ctrl+Shift+C | Open KISS-config file |
 """

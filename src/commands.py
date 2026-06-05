@@ -38,5 +38,5 @@ class SearchProvider(Provider):
                 score=0.5,
                 match_display=matcher.highlight("help"),
                 command=partial(self.app.action_help),
-                help="Show help dialog",
+                help="Show help page",
             )

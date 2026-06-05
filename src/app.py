@@ -18,7 +18,7 @@ from textual.widgets import DirectoryTree, Footer, Input, Label, Markdown, TextA
 from src.commands import SearchProvider
 from src.dialogs import ErrorDialog, HelpDialog
 from src.screens import StartScreen
-from src.config import load_config, update_config_theme
+from src.config import CONFIG_PATH, load_config, update_config_theme
 
 
 class StatusBar(Horizontal):
@@ -66,6 +66,7 @@ class Kiss(App):
             key="ctrl+p", action="command_palette", description="commands", show=False
         ),
         Binding(key="ctrl+h", action="help", description="help"),
+        Binding(key="ctrl+shift+c", action="edit_config", description="open config"),
     ]
 
     def __init__(self, folder):
@@ -102,14 +103,11 @@ class Kiss(App):
 
     def edit_file(self, path):
         try:
-            if not path.is_file():
-                return
-
             self.file = path
             config = self.config_data.get("kiss")
 
             text_editor = self.query_one("#editor")
-            text_editor.text = self.file.read_text()
+            text_editor.text = self.file.read_text() if path.is_file() else ""
 
             language_name = guess_language(text_editor.text, self.file)
             text_editor.language = language_name
@@ -121,9 +119,9 @@ class Kiss(App):
             text_editor.indent_type = "spaces"
             text_editor.indent_width = 4
 
-        except Exception:
+        except Exception as e:
             self.app.push_screen(
-                ErrorDialog("Ops!", "an error occurred, KISS cant open this file")
+                ErrorDialog("Ops!", f"an error occurred, KISS cant open this file: {e}")
             )
 
     def action_save_file(self):
@@ -138,6 +136,9 @@ class Kiss(App):
     def action_command_palette(self) -> None:
         # just change placeholder
         self.push_screen(CommandPalette(placeholder="Search files and commands..."))
+
+    def action_edit_config(self) -> None:
+        self.edit_file(Path(CONFIG_PATH))
 
     def on_key(self, event: events.Key) -> None:
         if event.key in ["tab", "shift+tab"]:
