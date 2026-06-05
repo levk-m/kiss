@@ -72,6 +72,7 @@ class Kiss(App):
         super().__init__()
         self.folder = folder
         self.file = None
+        self.config_data = load_config()
 
     def compose(self):
         yield StatusBar()
@@ -79,7 +80,7 @@ class Kiss(App):
         yield Footer()
 
     def on_mount(self):
-        self.theme = load_config().get("theme", "tokyo-night")
+        self.theme = self.config_data.get("kiss").get("theme", "tokyo-night")
         self.push_screen(StartScreen())
         self.set_timer(0.5, self.pop_screen)
 
@@ -105,16 +106,17 @@ class Kiss(App):
                 return
 
             self.file = path
+            config = self.config_data.get("kiss")
 
             text_editor = self.query_one("#editor")
             text_editor.text = self.file.read_text()
 
             language_name = guess_language(text_editor.text, self.file)
             text_editor.language = language_name
-            text_editor.theme = "dracula"
+            text_editor.theme = config.get("editor-theme", "dracula")
 
-            text_editor.show_line_numbers = True
-            text_editor.wrap_mode = "word"
+            text_editor.show_line_numbers = config.get("show_line_numbers", True)
+            text_editor.wrap_mode = config.get("wrap_mode", "word")
 
             text_editor.indent_type = "spaces"
             text_editor.indent_width = 4
@@ -161,5 +163,4 @@ if __name__ == "__main__":
 
     app = Kiss(folder=folder)
     app.run()
-    print(f"Финальная тема: {app.theme}")
     update_config_theme(app.theme)
