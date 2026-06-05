@@ -119,6 +119,8 @@ class Kiss(App):
             text_editor.indent_type = "spaces"
             text_editor.indent_width = 4
 
+            text_editor.highlight_cursor_line = config.get("highlight_cursor_line", False)
+
         except Exception as e:
             self.app.push_screen(
                 ErrorDialog("Ops!", f"an error occurred, KISS cant open this file: {e}")
