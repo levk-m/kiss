@@ -74,6 +74,7 @@ class Kiss(App):
         self.folder = folder
         self.file = None
         self.config_data = load_config()
+        self.saved_text = ""
 
     def compose(self):
         yield StatusBar()
@@ -101,6 +102,16 @@ class Kiss(App):
         path: Path = event.path
         self.edit_file(path)
 
+    def _update_status(self, mode: str, file: Path | None = None) -> None:
+        footer = self.query_one(StatusBar)
+        if mode == "FILE_SELECTION":
+            footer.edit_status = "FILE SELECTION"
+        else:
+            editor = self.query_one("#editor")
+            dirty = " *" if editor.text != self.saved_text else ""
+            name = file or self.file
+            footer.edit_status = f"EDIT {name}{dirty}"
+
     def edit_file(self, path):
         try:
             self.file = path
@@ -108,6 +119,7 @@ class Kiss(App):
 
             text_editor = self.query_one("#editor")
             text_editor.text = self.file.read_text() if path.is_file() else ""
+            self.saved_text = text_editor.text
 
             language_name = guess_language(text_editor.text, self.file)
             text_editor.language = language_name
@@ -119,7 +131,9 @@ class Kiss(App):
             text_editor.indent_type = "spaces"
             text_editor.indent_width = 4
 
-            text_editor.highlight_cursor_line = config.get("highlight_cursor_line", False)
+            text_editor.highlight_cursor_line = config.get(
+                "highlight_cursor_line", False
+            )
 
         except Exception as e:
             self.app.push_screen(
@@ -131,6 +145,8 @@ class Kiss(App):
             return
         editor = self.query_one("#editor")
         self.file.write_text(editor.text)
+        self.saved_text = editor.text
+        self._update_status("EDIT")
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
@@ -146,9 +162,12 @@ class Kiss(App):
         if event.key in ["tab", "shift+tab"]:
             footer = self.query_one(StatusBar)
             if footer.edit_status != "FILE SELECTION":
-                footer.edit_status = "FILE SELECTION"
+                self._update_status("FILE_SELECTION")
             else:
-                footer.edit_status = f"EDIT {self.file if self.file else ''}"
+                self._update_status("EDIT")
+
+    def on_text_area_changed(self, event):
+        self._update_status("EDIT")
 
 
 if __name__ == "__main__":
