@@ -85,6 +85,8 @@ class Kiss(App):
         self.theme = self.config_data.get("kiss").get("theme", "tokyo-night")
         self.push_screen(StartScreen())
         self.set_timer(0.5, self.pop_screen)
+        if self.file:
+            self.edit_file(self.file)
 
     def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:
         for cmd in super().get_system_commands(screen):
@@ -178,7 +180,7 @@ if __name__ == "__main__":
 To use:
     - kiss {folder} (open this folder)
     - kiss . (open current folder)
-    - kiss {some_file} (the parent folder of this file opens)
+    - kiss {some_file} (this file and its parent folder will open)
         """,
         formatter_class=RawDescriptionHelpFormatter,
     )
@@ -186,14 +188,16 @@ To use:
     parser.add_argument("--version", action="version", version="KISS 0.1.0")
 
     args = parser.parse_args()
-    folder: Path = args.folder
+    original: Path = args.folder
 
-    if not folder.exists():
-        raise FileNotFoundError(f"Bad path: {folder}")
+    if not original.exists():
+        raise FileNotFoundError(f"Bad path: {original}")
 
-    if not folder.is_dir():
-        folder = folder.parent
+    folder = original if original.is_dir() else original.parent
 
     app = Kiss(folder=folder)
+    if original.is_file():
+        app.file = original
+
     app.run()
     update_config_theme(app.theme)
