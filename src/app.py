@@ -1,6 +1,6 @@
 import os
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 from typing import Iterable
 
@@ -171,8 +171,19 @@ class Kiss(App):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser("KISS")
+    parser = ArgumentParser(
+        description="KISS - just code it",
+        usage="kiss [OPTIONS]",
+        epilog="""
+To use:
+    - kiss {folder} (open this folder)
+    - kiss . (open current folder)
+    - kiss {some_file} (the parent folder of this file opens)
+        """,
+        formatter_class=RawDescriptionHelpFormatter,
+    )
     parser.add_argument("folder", type=Path)
+    parser.add_argument("--version", action="version", version="KISS 0.1.0")
 
     args = parser.parse_args()
     folder: Path = args.folder
