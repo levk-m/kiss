@@ -6,12 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pyfiglet>=1.0.4",
-    "ruff>=0.15.15",
     "textual[syntax]>=8.2.7",
 ]
 
-[tool.uv.workspace]
-members = [
-    "trash/TerMan",
-    "trash/TermEdit",
+[dependency-groups]
+dev = [
+    "ruff>=0.15.21",
 ]
