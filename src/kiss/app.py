@@ -1,5 +1,3 @@
-import os
-import sys
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 from typing import Iterable
@@ -13,12 +11,12 @@ from textual.css.query import NoMatches
 from textual.highlight import guess_language
 from textual.reactive import reactive
 from textual.screen import Screen
-from textual.widgets import DirectoryTree, Footer, Input, Label, Markdown, TextArea
+from textual.widgets import DirectoryTree, Footer, Label, TextArea
 
-from src.commands import SearchProvider
-from src.dialogs import ErrorDialog, HelpDialog
-from src.screens import StartScreen
-from src.config import CONFIG_PATH, load_config, update_config_theme
+from kiss.commands import SearchProvider
+from kiss.config import CONFIG_PATH, load_config, update_config_theme
+from kiss.dialogs import ErrorDialog, HelpDialog
+from kiss.screens import StartScreen
 
 
 class StatusBar(Horizontal):
@@ -172,7 +170,7 @@ class Kiss(App):
         self._update_status("EDIT")
 
 
-if __name__ == "__main__":
+def run():
     parser = ArgumentParser(
         description="KISS - just code it",
         usage="kiss [OPTIONS]",
@@ -201,3 +199,7 @@ To use:
 
     app.run()
     update_config_theme(app.theme)
+
+
+if __name__ == "__main__":
+    run()

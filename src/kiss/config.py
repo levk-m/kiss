@@ -1,6 +1,5 @@
 import json
 import os
-from pathlib import Path
 
 CONFIG_PATH = os.path.expanduser("~/.kiss_conf.json")
 

@@ -3,12 +3,12 @@ import webbrowser
 from rich.text import TextType
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Vertical, Center, VerticalScroll
+from textual.containers import Center, Vertical, VerticalScroll
 from textual.screen import ModalScreen
-from textual.widgets import Static, Button, Markdown
+from textual.widgets import Button, Markdown, Static
 from textual.widgets._button import ButtonVariant
 
-from src.data.help_md import HELP
+from kiss.data.help_md import HELP
 
 
 class TextDialog(ModalScreen[None]):

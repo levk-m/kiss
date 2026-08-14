@@ -1,7 +1,6 @@
 from functools import partial
 
 from textual.command import Provider, Hits, Hit
-from pathlib import Path
 
 
 class SearchProvider(Provider):

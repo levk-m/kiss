@@ -3,7 +3,7 @@ HELP = """
 
 
 
-Github repo [click](https://github.com/MarkLevkovich/keepiss)
+Github repo [click](https://github.com/levk-m/keepiss)
 
 ## Navigation
 
