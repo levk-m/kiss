@@ -26,6 +26,9 @@ KISS is early-stage software. It's not a replacement for nano or vim — just a
 small editor that tries to stay simple and useful. Some things are still
 missing (see [TODO](#todo)).
 
+[![codecov](https://codecov.io/gh/levk-m/kiss/branch/main/graph/badge.svg)](https://codecov.io/gh/levk-m/kiss)
+[![Tests](https://img.shields.io/github/actions/workflow/status/levk-m/kiss/test.yml?branch=main&label=tests)](https://github.com/levk-m/kiss/actions)
+
 ---
 
 ## Install

@@ -14,11 +14,22 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=1.0",
+    "pytest-cov>=6.0",
     "ruff>=0.15.21",
     "ty",
 ]
 [project.scripts]
 kiss = "kiss_editor.app:run"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "--cov=kiss_editor --cov-report=term-missing"
+filterwarnings = [
+    "ignore::RuntimeWarning:runpy",
+]
 
 [tool.uv]
 package = true
