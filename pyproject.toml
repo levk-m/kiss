@@ -3,8 +3,8 @@ requires = ["uv_build>=0.12.5,<0.13"]
 build-backend = "uv_build"
 
 [project]
-name = "kiss"
-version = "0.1.0"
+name = "kiss-editor"
+version = "0.1.1"
 description = "A small terminal text editor"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -18,7 +18,7 @@ dev = [
     "ty",
 ]
 [project.scripts]
-kiss = "kiss.app:run"
+kiss = "kiss_editor.app:run"
 
 [tool.uv]
 package = true

@@ -48,7 +48,7 @@ uv run kiss
 Or run directly without cloning:
 
 ```bash
-uvx kiss
+uvx kiss-editor
 ```
 
 ---
@@ -180,7 +180,6 @@ the current application theme's palette, so the editor blends with the app UI.
 ## TODO
 
 - **Enter handling** — auto-indent to match the current line on newline
-- **Publish to PyPI** — `uv tool install kiss`
 - **Custom command palette** — replace the default Textual palette with a bespoke one
 
 ---

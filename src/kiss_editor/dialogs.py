@@ -8,7 +8,7 @@ from textual.screen import ModalScreen
 from textual.widgets import Button, Markdown, Static
 from textual.widgets._button import ButtonVariant
 
-from kiss.data.help_md import HELP
+from kiss_editor.data.help_md import HELP
 
 
 class TextDialog(ModalScreen[None]):

@@ -13,10 +13,10 @@ from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widgets import DirectoryTree, Footer, Label, TextArea
 
-from kiss.commands import SearchProvider
-from kiss.config import CONFIG_PATH, load_config, update_config_theme
-from kiss.dialogs import ErrorDialog, HelpDialog
-from kiss.screens import StartScreen
+from kiss_editor.commands import SearchProvider
+from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
+from kiss_editor.dialogs import ErrorDialog, HelpDialog
+from kiss_editor.screens import StartScreen
 
 
 class StatusBar(Horizontal):
@@ -202,7 +202,7 @@ To use:
         formatter_class=RawDescriptionHelpFormatter,
     )
     parser.add_argument("folder", type=Path)
-    parser.add_argument("--version", action="version", version="KISS 0.1.0")
+    parser.add_argument("--version", action="version", version="KISS 0.1.1")
 
     args = parser.parse_args()
     original: Path = args.folder
