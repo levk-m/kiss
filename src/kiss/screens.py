@@ -1,6 +1,5 @@
 from textual.screen import Screen
 from textual.widgets import Label
-import pyfiglet
 
 
 class StartScreen(Screen):
@@ -15,5 +14,12 @@ class StartScreen(Screen):
         """
 
     def compose(self):
-        text = pyfiglet.figlet_format("KISS", font="slant")
+        text = r"""
+        __ __ ______________
+       / //_//  _/ ___/ ___/
+      / ,<   / / \__ \\__ \
+     / /| |_/ / ___/ /__/ /
+    /_/ |_/___//____/____/
+
+        """
         yield Label(text)
