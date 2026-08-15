@@ -1,7 +1,7 @@
 [project]
 name = "kiss"
 version = "0.1.0"
-description = "just an editor"
+description = "A small terminal text editor"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

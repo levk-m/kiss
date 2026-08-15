@@ -3,7 +3,7 @@ HELP = """
 
 
 
-Github repo [click](https://github.com/levk-m/keepiss)
+Github repo [click](https://github.com/levk-m/kiss)
 
 ## Navigation
 
@@ -63,6 +63,6 @@ Github repo [click](https://github.com/levk-m/keepiss)
 | -- | -- |
 | Ctrl+Q | Quit |
 | Ctrl+S | Save |
-| Ctrl+P | Command Palette (where u can search files and change theme) |
+| Ctrl+P | Command Palette (where you can search files and change theme) |
 | Ctrl+Shift+C | Open KISS-config file |
 """

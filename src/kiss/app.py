@@ -80,9 +80,12 @@ class Kiss(App):
         yield Footer()
 
     def on_mount(self):
-        self.theme = self.config_data.get("kiss").get("theme", "tokyo-night")
-        self.push_screen(StartScreen())
-        self.set_timer(0.5, self.pop_screen)
+        conf_data = self.config_data.get("kiss")
+        self.theme = conf_data.get("theme", "tokyo-night")
+        if conf_data.get("start-screen", False):
+            self.push_screen(StartScreen())
+            self.set_timer(0.5, self.pop_screen)
+
         if self.file:
             self.edit_file(self.file)
 
@@ -93,7 +96,7 @@ class Kiss(App):
 
     def on_error(self, event):
         event.prevent_default()
-        self.app.push_screen(ErrorDialog("Ops", "an error occurred"))
+        self.app.push_screen(ErrorDialog("Error", "Something went wrong."))
 
     def _on_directory_tree_file_selected(self, event):
         footer = self.query_one(StatusBar)
@@ -136,9 +139,7 @@ class Kiss(App):
             )
 
         except Exception as e:
-            self.app.push_screen(
-                ErrorDialog("Ops!", f"an error occurred, KISS cant open this file: {e}")
-            )
+            self.app.push_screen(ErrorDialog("Error", f"Couldn't open this file: {e}"))
 
     def action_save_file(self):
         if self.file is None:
@@ -172,7 +173,7 @@ class Kiss(App):
 
 def run():
     parser = ArgumentParser(
-        description="KISS - just code it",
+        description="KISS - a small terminal editor",
         usage="kiss [OPTIONS]",
         epilog="""
 To use:
