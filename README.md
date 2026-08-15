@@ -14,11 +14,16 @@ Just an editor — no LSP, no plugins, no ambitions to become an IDE.
 
 ## About
 
+This is a **mini project** — a small experiment in building a TUI editor with
+Textual. It's not trying to compete with nano or vim, and it isn't a real
+product. It's for learning, and for the moments where a tiny no-nonsense
+editor is enough.
+
 | What                                                       | Why                                                              |
 | ---------------------------------------------------------- | ---------------------------------------------------------------- |
-| [Textual](https://github.com/Textualize/textual) framework | A modern Python TUI framework — no curses                        |
-| Minimal feature set                                        | Editing files first; LSP and plugins aren't a priority right now |
-| Fast startup                                               | Comfortable to reach for as your default editor                  |
+| [Textual](https://github.com/Textualize/textual) framework | Learning a modern Python TUI framework — no curses               |
+| Minimal feature set                                        | It's a mini project — a small editor is the whole point          |
+| Honest scope                                               | No LSP, no plugins, no pretence of being an IDE                  |
 
 ## Status
 
@@ -184,6 +189,7 @@ the current application theme's palette, so the editor blends with the app UI.
 
 - **Enter handling** — auto-indent to match the current line on newline
 - **Custom command palette** — replace the default Textual palette with a bespoke one
+- **Search within file** — `Ctrl+F` (maybe)
 
 ---
 
