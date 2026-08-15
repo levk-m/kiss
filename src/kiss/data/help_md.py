@@ -30,7 +30,7 @@ Changes take effect after restarting KISS.
         "theme": "tokyo-night",
         "editor-theme": "dracula",
         "show_line_numbers": true,
-        "wrap_mode": "word",
+        "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false
     }
@@ -42,7 +42,7 @@ Changes take effect after restarting KISS.
 | `theme` | `tokyo-night` | Application theme (see list below) |
 | `editor-theme` | `dracula` | Syntax highlighting theme (see list below) |
 | `show_line_numbers` | `true` | Show line numbers in the gutter |
-| `wrap_mode` | `word` | Text wrapping mode |
+| `soft_wrap` | `true` | Soft-wrap long lines |
 | `highlight_cursor_line` | `false` | Highlight the line under the cursor |
 | `start-screen` | `false` | Show the splash screen on startup |
 
@@ -57,6 +57,9 @@ Changes take effect after restarting KISS.
 ### Available editor themes
 
 `css`, `monokai`, `dracula`, `vscode_dark`, `github_light`
+
+`css` is the default editor theme. It has no fixed background — it adapts to
+the current application theme's palette, so the editor blends with the app UI.
 
 ---
 

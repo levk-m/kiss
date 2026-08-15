@@ -3,11 +3,12 @@
         "theme": "tokyo-night",
         "editor-theme": "dracula",
         "show_line_numbers": true,
-        "wrap_mode": "word",
+        "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false
     },
-    "available_themes": {
+    "themes": {
+        "_its_just_example_of_avaible_themes":"",
         "application": [
             "textual-dark",
             "textual-light",

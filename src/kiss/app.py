@@ -142,7 +142,7 @@ class Kiss(App):
 
             language_name = guess_language(text_editor.text, self.file)
             text_editor.language = language_name
-            text_editor.theme = config.get("editor-theme", "vscode_dark")
+            text_editor.theme = config.get("editor-theme", "css")
 
             text_editor.show_line_numbers = config.get("show_line_numbers", True)
             text_editor.soft_wrap = config.get("soft_wrap", True)
