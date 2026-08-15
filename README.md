@@ -18,7 +18,7 @@ small editor that tries to stay simple and useful. It's for learning, and for th
 editor is enough. Some things are still
 missing (see [TODO](#todo)).
 
-[![codecov](https://codecov.io/gh/levk-m/kiss/branch/main/graph/badge.svg)](https://codecov.io/gh/levk-m/kiss)
+[![codecov](https://codecov.io/gh/levk-m/kiss/graph/badge.svg?token=01WH0NHU9Q)](https://codecov.io/gh/levk-m/kiss)
 [![Tests](https://img.shields.io/github/actions/workflow/status/levk-m/kiss/test.yml?branch=main&label=tests)](https://github.com/levk-m/kiss/actions)
 
 ---
