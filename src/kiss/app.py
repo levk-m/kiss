@@ -39,12 +39,12 @@ class Kiss(App):
     DirectoryTree {
         dock: left;
         width: 25%;
-        border: heavy black;
+        border: heavy $panel;
     }
     TextArea {
         dock: right;
         width: 75%;
-        border: heavy black;
+        border: heavy $panel;
     }
     StatusBar {
         dock: top;
@@ -69,7 +69,9 @@ class Kiss(App):
             key="ctrl+p", action="command_palette", description="commands", show=False
         ),
         Binding(key="ctrl+h", action="help", description="help"),
-        Binding(key="ctrl+shift+c", action="edit_config", description="open config"),
+        Binding(
+            key="ctrl+o", action="edit_config", description="open config", show=False
+        ),
     ]
 
     def __init__(self, folder):

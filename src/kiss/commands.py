@@ -25,6 +25,11 @@ class SearchProvider(Provider):
             command=partial(self.app.action_help),
             help="Show help page",
         )
+        yield DiscoveryHit(
+            display="Edit config",
+            command=partial(self.app.action_edit_config),
+            help="Open KISS config",
+        )
 
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
@@ -45,4 +50,11 @@ class SearchProvider(Provider):
                 match_display=matcher.highlight("Help"),
                 command=partial(self.app.action_help),
                 help="Show help page",
+            )
+        if matcher.match("Edit config") > 0:
+            yield Hit(
+                score=0.5,
+                match_display=matcher.highlight("Edit config"),
+                command=partial(self.app.action_edit_config),
+                help="Open KISS config",
             )
