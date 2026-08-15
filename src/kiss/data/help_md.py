@@ -1,68 +1,113 @@
 HELP = """
 # KISS — Help
 
+A small terminal editor built on [Textual](https://github.com/Textualize/textual).
+Report issues and star the repo at [github.com/levk-m/kiss](https://github.com/levk-m/kiss).
 
+---
 
-Github repo [click](https://github.com/levk-m/kiss)
+## Command Palette
 
-## Navigation
+Open with `Ctrl+P`.
+
+- **Search** — fuzzy-match files and commands as you type.
+- **Theme** — switch the application theme on the fly.
+- **Help** — show this page.
+- **Edit config** — open `~/.kiss_conf.json`.
+
+---
+
+## Configuration
+
+KISS reads settings from `~/.kiss_conf.json` (JSON).
+
+Open the config with `Ctrl+O` or from the command palette (`Edit config`).
+Changes take effect after restarting KISS.
+
+```json
+{
+    "kiss": {
+        "theme": "tokyo-night",
+        "editor-theme": "dracula",
+        "show_line_numbers": true,
+        "wrap_mode": "word",
+        "highlight_cursor_line": false,
+        "start-screen": false
+    }
+}
+```
+
+| Option | Default | Description |
+| -- | -- | -- |
+| `theme` | `tokyo-night` | Application theme (see list below) |
+| `editor-theme` | `dracula` | Syntax highlighting theme (see list below) |
+| `show_line_numbers` | `true` | Show line numbers in the gutter |
+| `wrap_mode` | `word` | Text wrapping mode |
+| `highlight_cursor_line` | `false` | Highlight the line under the cursor |
+| `start-screen` | `false` | Show the splash screen on startup |
+
+### Available application themes
+
+`textual-dark`, `textual-light`, `nord`, `gruvbox`, `catppuccin-mocha`,
+`catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`, `dracula`,
+`tokyo-night`, `monokai`, `flexoki`, `solarized-light`, `solarized-dark`,
+`rose-pine`, `rose-pine-moon`, `rose-pine-dawn`, `atom-one-dark`,
+`atom-one-light`, `ansi-dark`, `ansi-light`
+
+### Available editor themes
+
+`css`, `monokai`, `dracula`, `vscode_dark`, `github_light`
+
+---
+
+## Keybindings
+
+### Navigation
 
 | Key | Action |
 | -- | -- |
-| Cursor up | Move cursor up |
-| Cursor down | Move cursor down |
-| Cursor left | Move cursor left |
-| Cursor right | Move cursor right |
+| Cursor up / down / left / right | Move cursor |
 | Home / Ctrl+A | Move to line start |
 | End / Ctrl+E | Move to line end |
 | PgUp / Ctrl+PgUp | Page up |
 | PgDn / Ctrl+PgDn | Page down |
-| Ctrl+Left (Page Left) | Page left |
-| Ctrl+Right (Page Right) | Page right |
-| Ctrl+Left (word) / Ctrl+Right (word) | Move by word left/right |
-| Shift+Left | Select left |
-| Shift+Right | Select right |
-| Shift+Home | Select to line start |
-| Shift+End | Select to line end |
-| Shift+Up | Select up |
-| Shift+Down | Select down |
-| Shift+PgUp | Select page up |
-| Shift+PgDn | Select page down |
-| F6 | Select line |
-| F7 | Select all |
-| Ctrl+<character left> | Decrease indent / move character left |
-| Ctrl+<character right> | Increase indent / move character right |
+| Ctrl+Left / Ctrl+Right | Move by word |
+| Alt+Left / Alt+Right | Move to word start / end |
 
-## Editing
+### Selection
+
+| Key | Action |
+| -- | -- |
+| Shift+Arrows | Select character / line |
+| Shift+Home / Shift+End | Select to line start / end |
+| Shift+PgUp / Shift+PgDn | Select page up / down |
+| F6 | Select current line |
+| F7 | Select all |
+
+### Editing
 
 | Key | Action |
 | -- | -- |
 | Backspace / Ctrl+Backspace | Delete character before cursor |
 | Delete / Ctrl+D | Delete character under cursor |
-| Alt+Del | Delete to start of word (right-side delete) |
-| Alt+Left | Move to start of word |
-| Alt+Right | Move to end of word |
-| Ctrl+X (or Super+X) | Cut |
-| Ctrl+C (or Super+C) | Copy |
-| Ctrl+V | Paste |
+| Alt+Del | Delete to start of word |
+| Ctrl+Left / Ctrl+Right | Decrease / increase indent |
 | Ctrl+U | Delete to line start |
 | Ctrl+K | Delete to line end |
+| Ctrl+X / Super+X | Cut |
+| Ctrl+C / Super+C | Copy |
+| Ctrl+V | Paste |
 | Ctrl+Z | Undo |
 | Ctrl+Y | Redo |
 
-## Focus & Interface navigation
+### Interface
 
 | Key | Action |
 | -- | -- |
-| Tab | Focus next element |
-| Shift+Tab | Focus previous element |
-
-## Other shortcuts
-
-| Key | Action |
-| -- | -- |
-| Ctrl+Q | Quit |
+| Tab / Shift+Tab | Focus next / previous element |
 | Ctrl+S | Save |
-| Ctrl+P | Command Palette (where you can search files and change theme) |
-| Ctrl+Shift+C | Open KISS-config file |
+| Ctrl+P | Command palette |
+| Ctrl+O | Open config |
+| Ctrl+H | Help |
+| Ctrl+Q | Quit |
 """

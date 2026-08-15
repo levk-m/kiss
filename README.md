@@ -65,7 +65,7 @@ kiss .              Open current directory
 - **Undo / Redo** — `Ctrl+Z` / `Ctrl+Y`
 - **Clipboard** — cut, copy, paste (`Ctrl+X/C/V`)
 - **Line numbers**, word wrap, cursor line highlight
-- **Config** — `~/.kiss_conf.json`, open with `Ctrl+Shift+C`
+- **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — pyfiglet logo on startup
 - **Status bar** — shows filename, unsaved changes (`*`), focus mode
@@ -122,14 +122,15 @@ kiss .              Open current directory
 | `Ctrl+S`            | Save                              |
 | `Ctrl+P`            | Command palette (files, themes)   |
 | `Ctrl+H`            | Help dialog                       |
-| `Ctrl+Shift+C`      | Open config (`~/.kiss_conf.json`) |
+| `Ctrl+O`            | Open config (`~/.kiss_conf.json`) |
 | `Ctrl+Q`            | Quit                              |
 
 ---
 
 ## Configuration
 
-JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+Shift+C` — changes take effect after restart.
+JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+O` — changes take effect after restart.
+A copyable example lives at `examples/kiss_conf.json`.
 
 ```json
 {
@@ -152,6 +153,18 @@ JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+Shift+C` — changes
 | `kiss.wrap_mode`             | `"word"`        | Text wrapping mode            |
 | `kiss.highlight_cursor_line` | `false`         | Highlight current line        |
 | `kiss.start-screen`          | `false`         | Show splash screen on startup |
+
+### Application themes
+
+`textual-dark`, `textual-light`, `nord`, `gruvbox`, `catppuccin-mocha`,
+`catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`, `dracula`,
+`tokyo-night`, `monokai`, `flexoki`, `solarized-light`, `solarized-dark`,
+`rose-pine`, `rose-pine-moon`, `rose-pine-dawn`, `atom-one-dark`,
+`atom-one-light`, `ansi-dark`, `ansi-light`
+
+### Editor themes
+
+`css`, `monokai`, `dracula`, `vscode_dark`, `github_light`
 
 ---
 
