@@ -1,6 +1,6 @@
 from functools import partial
 
-from textual.command import Provider, Hits, Hit
+from textual.command import DiscoveryHit, Hit, Hits, Provider
 
 
 class SearchProvider(Provider):
@@ -19,6 +19,18 @@ class SearchProvider(Provider):
                     result.append(file)
         return result
 
+    async def discover(self) -> Hits:
+        yield DiscoveryHit(
+            display="Help",
+            command=partial(self.app.action_help),
+            help="Show help page",
+        )
+        yield DiscoveryHit(
+            display="Edit config",
+            command=partial(self.app.action_edit_config),
+            help="Open KISS config",
+        )
+
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
         for path in self.read_all_files():
@@ -32,10 +44,17 @@ class SearchProvider(Provider):
                     help="Open file in KISS",
                 )
 
-        if matcher.match("help") > 0:
+        if matcher.match("Help") > 0:
             yield Hit(
                 score=0.5,
-                match_display=matcher.highlight("help"),
+                match_display=matcher.highlight("Help"),
                 command=partial(self.app.action_help),
                 help="Show help page",
+            )
+        if matcher.match("Edit config") > 0:
+            yield Hit(
+                score=0.5,
+                match_display=matcher.highlight("Edit config"),
+                command=partial(self.app.action_edit_config),
+                help="Open KISS config",
             )

@@ -1,10 +1,10 @@
-                _  _____ ________
-               | |/ /| |/ __|/ __|
-               | ' <\| |\__ \ (__
-               |_|\_\|_|___/\___|
+<p align="center">
+  <img src="examples/kiss-prev.png" alt="KISS editor preview" width="900">
+</p>
 
-                      KISS
-            keep it simple, stupid.
+<p align="center">
+  <strong>KISS</strong> — <em>keep it simple, stupid.</em>
+</p>
 
 A small terminal editor built with [Textual](https://github.com/Textualize/textual).
 It opens files and folders, with syntax highlighting, a file tree and undo/redo.
@@ -65,7 +65,7 @@ kiss .              Open current directory
 - **Undo / Redo** — `Ctrl+Z` / `Ctrl+Y`
 - **Clipboard** — cut, copy, paste (`Ctrl+X/C/V`)
 - **Line numbers**, word wrap, cursor line highlight
-- **Config** — `~/.kiss_conf.json`, open with `Ctrl+Shift+C`
+- **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — pyfiglet logo on startup
 - **Status bar** — shows filename, unsaved changes (`*`), focus mode
@@ -122,14 +122,15 @@ kiss .              Open current directory
 | `Ctrl+S`            | Save                              |
 | `Ctrl+P`            | Command palette (files, themes)   |
 | `Ctrl+H`            | Help dialog                       |
-| `Ctrl+Shift+C`      | Open config (`~/.kiss_conf.json`) |
+| `Ctrl+O`            | Open config (`~/.kiss_conf.json`) |
 | `Ctrl+Q`            | Quit                              |
 
 ---
 
 ## Configuration
 
-JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+Shift+C` — changes take effect after restart.
+JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+O` — changes take effect after restart.
+A copyable example lives at `examples/kiss_conf.json`.
 
 ```json
 {
@@ -137,7 +138,7 @@ JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+Shift+C` — changes
         "theme": "tokyo-night",
         "editor-theme": "dracula",
         "show_line_numbers": true,
-        "wrap_mode": "word",
+        "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false
     }
@@ -149,9 +150,24 @@ JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+Shift+C` — changes
 | `kiss.theme`                 | `"tokyo-night"` | Application theme             |
 | `kiss.editor-theme`          | `"dracula"`     | Syntax highlighting colors    |
 | `kiss.show_line_numbers`     | `true`          | Show line numbers             |
-| `kiss.wrap_mode`             | `"word"`        | Text wrapping mode            |
+| `kiss.soft_wrap`             | `true`          | Soft-wrap long lines          |
 | `kiss.highlight_cursor_line` | `false`         | Highlight current line        |
 | `kiss.start-screen`          | `false`         | Show splash screen on startup |
+
+### Application themes
+
+`textual-dark`, `textual-light`, `nord`, `gruvbox`, `catppuccin-mocha`,
+`catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`, `dracula`,
+`tokyo-night`, `monokai`, `flexoki`, `solarized-light`, `solarized-dark`,
+`rose-pine`, `rose-pine-moon`, `rose-pine-dawn`, `atom-one-dark`,
+`atom-one-light`, `ansi-dark`, `ansi-light`
+
+### Editor themes
+
+`css`, `monokai`, `dracula`, `vscode_dark`, `github_light`
+
+`css` is the default editor theme. It has no fixed background — it adapts to
+the current application theme's palette, so the editor blends with the app UI.
 
 ---
 

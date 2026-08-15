@@ -39,17 +39,31 @@ class Kiss(App):
     DirectoryTree {
         dock: left;
         width: 25%;
-        border: round black;
+        border: heavy $panel;
     }
     TextArea {
         dock: right;
         width: 75%;
-        border: round black;
+        border: heavy $panel;
     }
     StatusBar {
         dock: top;
         height: 1;
         background: $surface;
+    }
+    CommandPalette > Vertical {
+        width: 70%;
+        max-width: 90;
+        min-width: 40;
+        border: solid $panel;
+    }
+    CommandPalette #--input {
+        border: none;
+        border-bottom: hkey $border;
+    }
+    CommandPalette > .command-palette--highlight {
+        color: $accent;
+        text-style: bold;
     }
     """
 
@@ -64,7 +78,9 @@ class Kiss(App):
             key="ctrl+p", action="command_palette", description="commands", show=False
         ),
         Binding(key="ctrl+h", action="help", description="help"),
-        Binding(key="ctrl+shift+c", action="edit_config", description="open config"),
+        Binding(
+            key="ctrl+o", action="edit_config", description="open config", show=False
+        ),
     ]
 
     def __init__(self, folder):
@@ -126,10 +142,10 @@ class Kiss(App):
 
             language_name = guess_language(text_editor.text, self.file)
             text_editor.language = language_name
-            text_editor.theme = config.get("editor-theme", "dracula")
+            text_editor.theme = config.get("editor-theme", "css")
 
             text_editor.show_line_numbers = config.get("show_line_numbers", True)
-            text_editor.wrap_mode = config.get("wrap_mode", "word")
+            text_editor.soft_wrap = config.get("soft_wrap", True)
 
             text_editor.indent_type = "spaces"
             text_editor.indent_width = 4
@@ -154,7 +170,9 @@ class Kiss(App):
 
     def action_command_palette(self) -> None:
         # just change placeholder
-        self.push_screen(CommandPalette(placeholder="Search files and commands..."))
+        self.push_screen(
+            CommandPalette(placeholder="Search files or commands… (try 'help')")
+        )
 
     def action_edit_config(self) -> None:
         self.edit_file(Path(CONFIG_PATH))

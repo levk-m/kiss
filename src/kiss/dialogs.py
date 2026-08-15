@@ -26,7 +26,7 @@ class TextDialog(ModalScreen[None]):
         min-width: 30%;
         width: auto;
         height: auto;
-        border: round $primary;
+        border: solid $primary;
     }
 
     TextDialog Static {
