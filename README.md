@@ -11,24 +11,11 @@ It opens files and folders, with syntax highlighting, a file tree and undo/redo.
 Just an editor — no LSP, no plugins, no ambitions to become an IDE.
 
 ---
-
-## About
-
-This is a **mini project** — a small experiment in building a TUI editor with
-Textual. It's not trying to compete with nano or vim, and it isn't a real
-product. It's for learning, and for the moments where a tiny no-nonsense
-editor is enough.
-
-| What                                                       | Why                                                              |
-| ---------------------------------------------------------- | ---------------------------------------------------------------- |
-| [Textual](https://github.com/Textualize/textual) framework | Learning a modern Python TUI framework — no curses               |
-| Minimal feature set                                        | It's a mini project — a small editor is the whole point          |
-| Honest scope                                               | No LSP, no plugins, no pretence of being an IDE                  |
-
-## Status
+## About & status
 
 KISS is early-stage software. It's not a replacement for nano or vim — just a
-small editor that tries to stay simple and useful. Some things are still
+small editor that tries to stay simple and useful. It's for learning, and for the moments where a tiny no-nonsense
+editor is enough. Some things are still
 missing (see [TODO](#todo)).
 
 [![codecov](https://codecov.io/gh/levk-m/kiss/branch/main/graph/badge.svg)](https://codecov.io/gh/levk-m/kiss)
