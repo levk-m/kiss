@@ -39,17 +39,22 @@ class Kiss(App):
     DirectoryTree {
         dock: left;
         width: 25%;
-        border: round black;
+        border: heavy black;
     }
     TextArea {
         dock: right;
         width: 75%;
-        border: round black;
+        border: heavy black;
     }
     StatusBar {
         dock: top;
         height: 1;
         background: $surface;
+    }
+    CommandPalette > Vertical {
+        width: 70%;
+        max-width: 90;
+        min-width: 40;
     }
     """
 
@@ -154,7 +159,9 @@ class Kiss(App):
 
     def action_command_palette(self) -> None:
         # just change placeholder
-        self.push_screen(CommandPalette(placeholder="Search files and commands..."))
+        self.push_screen(
+            CommandPalette(placeholder="Search files or commands… (try 'help')")
+        )
 
     def action_edit_config(self) -> None:
         self.edit_file(Path(CONFIG_PATH))
