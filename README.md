@@ -30,7 +30,13 @@ missing (see [TODO](#todo)).
 
 ## Install
 
-Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+via package managers:
+
+```bash
+[uv tool / pipx] install kiss-editor
+```
+
+or from source (requires Python 3.12+ and [uv](https://docs.astral.sh/uv/)):
 
 ```bash
 git clone https://github.com/levk-m/kiss.git
