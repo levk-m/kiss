@@ -255,7 +255,7 @@ To use:
         formatter_class=RawDescriptionHelpFormatter,
     )
     parser.add_argument("folder", type=Path)
-    parser.add_argument("--version", action="version", version="KISS 0.1.1")
+    parser.add_argument("--version", action="version", version="KISS 0.2.0")
 
     args = parser.parse_args()
     original: Path = args.folder
