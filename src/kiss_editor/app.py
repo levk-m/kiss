@@ -145,21 +145,26 @@ class Kiss(App):
         self.app.push_screen(ErrorDialog("Error", "Something went wrong."))
 
     def _on_directory_tree_file_selected(self, event):
-        footer = self.query_one(StatusBar)
-        footer.edit_status = "FILE SELECTION"
-
         path: Path = event.path
         self.edit_file(path)
+        self._update_status()
 
-    def _update_status(self, mode: str, file: Path | None = None) -> None:
+    def _update_status(self) -> None:
         footer = self.query_one(StatusBar)
-        if mode == "FILE_SELECTION":
+        name = self.file
+        if name is not None and self._is_img(name):
+            footer.edit_status = f"IMAGE {name}"
+        elif self.query_one(DirectoryTree).has_focus:
             footer.edit_status = "FILE SELECTION"
+        elif name is None:
+            footer.edit_status = "EDIT"
         else:
             editor = self.query_one("#editor")
             dirty = " *" if editor.text != self.saved_text else ""
-            name = file or self.file
             footer.edit_status = f"EDIT {name}{dirty}"
+
+    def on_descendant_focus(self, event: events.DescendantFocus) -> None:
+        self._update_status()
 
     def edit_file(self, path):
         if self._is_img(path):
@@ -199,7 +204,7 @@ class Kiss(App):
         editor = self.query_one("#editor")
         self.file.write_text(editor.text)
         self.saved_text = editor.text
-        self._update_status("EDIT")
+        self._update_status()
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
@@ -213,20 +218,16 @@ class Kiss(App):
     def action_edit_config(self) -> None:
         self.edit_file(Path(CONFIG_PATH))
 
-    def on_key(self, event: events.Key) -> None:
-        if event.key in ["tab", "shift+tab"]:
-            footer = self.query_one(StatusBar)
-            if footer.edit_status != "FILE SELECTION":
-                self._update_status("FILE_SELECTION")
-            else:
-                self._update_status("EDIT")
-
     def on_text_area_changed(self, event):
-        self._update_status("EDIT")
+        self._update_status()
 
     @staticmethod
     def _is_img(path: Path) -> bool:
-        return path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+        return (
+            path is not None
+            and path.is_file()
+            and path.suffix.lower() in IMAGE_EXTENSIONS
+        )
 
     def _view_image(self, path: Path):
         try:
@@ -236,6 +237,7 @@ class Kiss(App):
             self.saved_text = ""
             self.query_one("#editor").display = False
             viewer.display = True
+            self._update_status()
         except Exception as e:
             self.app.push_screen(ErrorDialog("Error", f"Couldn't open this image: {e}"))
 
