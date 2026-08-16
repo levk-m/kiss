@@ -17,6 +17,18 @@ Open with `Ctrl+P`.
 
 ---
 
+## Viewing images
+
+KISS opens images directly in the terminal.
+
+Supported formats: `.png`, `.jpg`, `.jpeg`, `.jfif`, `.gif`, `.bmp`, `.webp`,
+`.ico`, `.tif`, `.tiff`, `.avif`, `.ppm`, `.pgm`, `.pbm`.
+
+For a proper rendering your terminal must support a graphics protocol (Kitty,
+Sixel or iTerm), otherwise the image may look squished or be missing.
+
+---
+
 ## Configuration
 
 KISS reads settings from `~/.kiss_conf.json` (JSON).
@@ -40,7 +52,7 @@ Changes take effect after restarting KISS.
 | Option | Default | Description |
 | -- | -- | -- |
 | `theme` | `tokyo-night` | Application theme (see list below) |
-| `editor-theme` | `dracula` | Syntax highlighting theme (see list below) |
+| `editor-theme` | `css` | Syntax highlighting theme (see list below) |
 | `show_line_numbers` | `true` | Show line numbers in the gutter |
 | `soft_wrap` | `true` | Soft-wrap long lines |
 | `highlight_cursor_line` | `false` | Highlight the line under the cursor |

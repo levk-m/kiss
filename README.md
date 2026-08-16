@@ -67,16 +67,16 @@ kiss .              Open current directory
 
 ## Features
 
+The usual editor essentials are here — undo/redo, clipboard, line numbers,
+word wrap, cursor line highlight. On top of that KISS adds:
+
 - **File tree** — browse and open files from the sidebar
-- **Syntax highlighting** — auto-detected, Dracula by default
+- **Syntax highlighting** — auto-detected from the file
 - **Command palette** (`Ctrl+P`) — fuzzy-find files, switch themes
-- **Undo / Redo** — `Ctrl+Z` / `Ctrl+Y`
-- **Clipboard** — cut, copy, paste (`Ctrl+X/C/V`)
-- **Line numbers**, word wrap, cursor line highlight
+- **Image viewer** — open images directly in the terminal (requires Kitty, Sixel or iTerm support)
 - **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
-- **Splash screen** — pyfiglet logo on startup
-- **Status bar** — shows filename, unsaved changes (`*`), focus mode
+- **Splash screen** — ASCII logo on startup
 
 ---
 
@@ -156,7 +156,7 @@ A copyable example lives at `examples/kiss_conf.json`.
 | Key                          | Default         | Description                   |
 | ---------------------------- | --------------- | ----------------------------- |
 | `kiss.theme`                 | `"tokyo-night"` | Application theme             |
-| `kiss.editor-theme`          | `"dracula"`     | Syntax highlighting colors    |
+| `kiss.editor-theme`          | `"css"`         | Syntax highlighting colors    |
 | `kiss.show_line_numbers`     | `true`          | Show line numbers             |
 | `kiss.soft_wrap`             | `true`          | Soft-wrap long lines          |
 | `kiss.highlight_cursor_line` | `false`         | Highlight current line        |
@@ -184,6 +184,7 @@ the current application theme's palette, so the editor blends with the app UI.
 - **Enter handling** — auto-indent to match the current line on newline
 - **Custom command palette** — replace the default Textual palette with a bespoke one
 - **Search within file** — `Ctrl+F` (maybe)
+- **Markdown viewer** — two modes: render and edit
 
 ---
 
