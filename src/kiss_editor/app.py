@@ -169,6 +169,8 @@ class Kiss(App):
             config = self.config_data.get("kiss")
 
             text_editor = self.query_one("#editor")
+            text_editor.display = True
+            self.query_one("#image-viewer").display = False
             text_editor.text = self.file.read_text() if path.is_file() else ""
             self.saved_text = text_editor.text
             try:
