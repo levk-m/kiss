@@ -12,11 +12,30 @@ from textual.highlight import guess_language
 from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widgets import DirectoryTree, Footer, Label, TextArea
+from textual.widgets._text_area import LanguageDoesNotExist
+from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.commands import SearchProvider
 from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
 from kiss_editor.dialogs import ErrorDialog, HelpDialog
 from kiss_editor.screens import StartScreen
+
+IMAGE_EXTENSIONS = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".jfif",
+    ".gif",
+    ".bmp",
+    ".webp",
+    ".ico",
+    ".tif",
+    ".tiff",
+    ".avif",
+    ".ppm",
+    ".pgm",
+    ".pbm",
+}
 
 
 class StatusBar(Horizontal):
@@ -65,6 +84,14 @@ class Kiss(App):
         color: $accent;
         text-style: bold;
     }
+    #image-viewer {
+        dock: right;
+        width: 75%;
+        height: 100%;
+        display: none;
+        border: heavy $panel;
+        padding: 1 2;
+    }
     """
 
     COMMANDS = App.COMMANDS | {SearchProvider}
@@ -92,7 +119,10 @@ class Kiss(App):
 
     def compose(self):
         yield StatusBar()
-        yield Horizontal(TextArea("", id="editor"), DirectoryTree(self.folder))
+        with Horizontal():
+            yield TextArea("", id="editor")
+            yield ImageViewer(id="image-viewer")
+            yield DirectoryTree(self.folder)
         yield Footer()
 
     def on_mount(self):
@@ -132,6 +162,8 @@ class Kiss(App):
             footer.edit_status = f"EDIT {name}{dirty}"
 
     def edit_file(self, path):
+        if self._is_img(path):
+            return self._view_image(path)
         try:
             self.file = path
             config = self.config_data.get("kiss")
@@ -139,9 +171,11 @@ class Kiss(App):
             text_editor = self.query_one("#editor")
             text_editor.text = self.file.read_text() if path.is_file() else ""
             self.saved_text = text_editor.text
-
-            language_name = guess_language(text_editor.text, self.file)
-            text_editor.language = language_name
+            try:
+                language_name = guess_language(text_editor.text, self.file)
+                text_editor.language = language_name
+            except LanguageDoesNotExist:
+                text_editor.language = ""
             text_editor.theme = config.get("editor-theme", "css")
 
             text_editor.show_line_numbers = config.get("show_line_numbers", True)
@@ -158,7 +192,7 @@ class Kiss(App):
             self.app.push_screen(ErrorDialog("Error", f"Couldn't open this file: {e}"))
 
     def action_save_file(self):
-        if self.file is None:
+        if self.file is None or self._is_img(self.file):
             return
         editor = self.query_one("#editor")
         self.file.write_text(editor.text)
@@ -187,6 +221,21 @@ class Kiss(App):
 
     def on_text_area_changed(self, event):
         self._update_status("EDIT")
+
+    @staticmethod
+    def _is_img(path: Path) -> bool:
+        return path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+
+    def _view_image(self, path: Path):
+        try:
+            viewer = self.query_one("#image-viewer")
+            viewer.image = path
+            self.file = path
+            self.saved_text = ""
+            self.query_one("#editor").display = False
+            viewer.display = True
+        except Exception as e:
+            self.app.push_screen(ErrorDialog("Error", f"Couldn't open this image: {e}"))
 
 
 def run():
