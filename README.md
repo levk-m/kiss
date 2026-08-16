@@ -11,6 +11,7 @@ It opens files and folders, with syntax highlighting, a file tree and undo/redo.
 Just an editor — no LSP, no plugins, no ambitions to become an IDE.
 
 ---
+
 ## About & status
 
 KISS is early-stage software. It's not a replacement for nano or vim — just a
@@ -24,6 +25,12 @@ missing (see [TODO](#todo)).
 ---
 
 ## Install
+
+for unix systems:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/levk-m/kiss/main/install.sh | bash
+```
 
 via package managers:
 
