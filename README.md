@@ -70,7 +70,7 @@ kiss .              Open current directory
 The usual editor essentials are here — undo/redo, clipboard, line numbers,
 word wrap, cursor line highlight. On top of that KISS adds:
 
-- **File tree** — browse and open files from the sidebar
+- **File tree** — browse and open files with custom icons per file type
 - **Syntax highlighting** — auto-detected from the file
 - **Command palette** (`Ctrl+P`) — fuzzy-find files, switch themes
 - **Image viewer** — open images directly in the terminal (requires Kitty, Sixel or iTerm support)
