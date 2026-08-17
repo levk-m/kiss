@@ -1,9 +1,17 @@
 from functools import partial
+from typing import TYPE_CHECKING, cast
 
 from textual.command import DiscoveryHit, Hit, Hits, Provider
 
+if TYPE_CHECKING:
+    from kiss_editor.app import Kiss
+
 
 class SearchProvider(Provider):
+    @property
+    def app(self) -> "Kiss":
+        return cast("Kiss", super().app)
+
     def read_all_files(self):
         result = []
         folders = [self.app.folder]

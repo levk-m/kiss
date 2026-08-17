@@ -11,7 +11,7 @@ from textual.css.query import NoMatches
 from textual.highlight import guess_language
 from textual.reactive import reactive
 from textual.screen import Screen
-from textual.widgets import DirectoryTree, Footer, Label, TextArea
+from textual.widgets import Footer, Label, TextArea
 from textual.widgets._text_area import LanguageDoesNotExist
 from textual_image.widget import Image as ImageViewer
 
@@ -46,7 +46,7 @@ class StatusBar(Horizontal):
 
     def watch_edit_status(self, status: str) -> None:
         try:
-            self.query_one("#status-label").update(status)
+            self.query_one(Label).update(status)
         except NoMatches:
             pass
 
@@ -55,7 +55,7 @@ class Kiss(App):
     TITLE = "KISS"
 
     CSS = """
-    DirectoryTree {
+    KissDirectoryTree {
         dock: left;
         width: 25%;
         border: heavy $panel;
@@ -122,7 +122,6 @@ class Kiss(App):
         with Horizontal():
             yield TextArea("", id="editor")
             yield ImageViewer(id="image-viewer")
-            # yield DirectoryTree(self.folder)
             yield KissDirectoryTree(self.folder)
         yield Footer()
 
@@ -154,18 +153,16 @@ class Kiss(App):
         footer = self.query_one(StatusBar)
         name = self.file
 
-        text_area = self.query_one(TextArea)
-        row, col = text_area.cursor_location
-
         if name is not None and self._is_img(name):
             footer.edit_status = f"IMAGE {name}"
-        elif self.query_one(DirectoryTree).has_focus:
+        elif self.query_one(KissDirectoryTree).has_focus:
             footer.edit_status = "FILE SELECTION"
         elif name is None:
             footer.edit_status = "EDIT"
         else:
-            editor = self.query_one("#editor")
-            dirty = " *" if editor.text != self.saved_text else ""
+            text_area = self.query_one(TextArea)
+            row, col = text_area.cursor_location
+            dirty = " *" if text_area.text != self.saved_text else ""
             footer.edit_status = f"EDIT {name}{dirty} | row: {row} col: {col}"
 
     def on_text_area_selection_changed(self, event):
@@ -181,9 +178,9 @@ class Kiss(App):
             self.file = path
             config = self.config_data.get("kiss")
 
-            text_editor = self.query_one("#editor")
+            text_editor = self.query_one(TextArea)
             text_editor.display = True
-            self.query_one("#image-viewer").display = False
+            self.query_one(ImageViewer).display = False
             text_editor.text = self.file.read_text() if path.is_file() else ""
             self.saved_text = text_editor.text
             try:
@@ -209,7 +206,7 @@ class Kiss(App):
     def action_save_file(self):
         if self.file is None or self._is_img(self.file):
             return
-        editor = self.query_one("#editor")
+        editor = self.query_one(TextArea)
         self.file.write_text(editor.text)
         self.saved_text = editor.text
         self._update_status()
@@ -239,11 +236,11 @@ class Kiss(App):
 
     def _view_image(self, path: Path):
         try:
-            viewer = self.query_one("#image-viewer")
+            viewer = self.query_one(ImageViewer)
             viewer.image = path
             self.file = path
             self.saved_text = ""
-            self.query_one("#editor").display = False
+            self.query_one(TextArea).display = False
             viewer.display = True
             self._update_status()
         except Exception as e:

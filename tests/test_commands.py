@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from textual.screen import Screen
+
 from kiss_editor.commands import SearchProvider
 
 
@@ -17,7 +19,7 @@ class FakeApp:
         pass
 
 
-class FakeScreen:
+class FakeScreen(Screen):
     app = None
 
 
