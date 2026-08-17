@@ -152,6 +152,10 @@ class Kiss(App):
     def _update_status(self) -> None:
         footer = self.query_one(StatusBar)
         name = self.file
+
+        text_area = self.query_one(TextArea)
+        row, col = text_area.cursor_location
+
         if name is not None and self._is_img(name):
             footer.edit_status = f"IMAGE {name}"
         elif self.query_one(DirectoryTree).has_focus:
@@ -161,7 +165,10 @@ class Kiss(App):
         else:
             editor = self.query_one("#editor")
             dirty = " *" if editor.text != self.saved_text else ""
-            footer.edit_status = f"EDIT {name}{dirty}"
+            footer.edit_status = f"EDIT {name}{dirty} | row: {row} col: {col}"
+
+    def on_text_area_selection_changed(self, event):
+        self._update_status()
 
     def on_descendant_focus(self, event: events.DescendantFocus) -> None:
         self._update_status()
