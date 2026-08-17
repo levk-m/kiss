@@ -1,4 +1,3 @@
-
 from rich.text import Text
 from textual.screen import Screen
 from textual.widgets import DirectoryTree, Label

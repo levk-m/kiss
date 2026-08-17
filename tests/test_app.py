@@ -4,11 +4,11 @@ from types import SimpleNamespace
 
 from PIL import Image
 from textual.command import CommandPalette
-from textual.widgets import DirectoryTree, Footer
+from textual.widgets import Footer
 
 from kiss_editor.app import Kiss, StatusBar
 from kiss_editor.dialogs import ErrorDialog, HelpDialog
-from kiss_editor.screens import StartScreen
+from kiss_editor.screens import KissDirectoryTree, StartScreen
 
 
 def make_image(path: Path) -> None:
@@ -20,7 +20,7 @@ async def test_compose_mounts_expected_widgets(app):
     assert the_app.query_one(StatusBar)
     assert the_app.query_one("#editor")
     assert the_app.query_one("#image-viewer")
-    assert the_app.query_one(DirectoryTree)
+    assert the_app.query_one(KissDirectoryTree)
     assert the_app.query_one(Footer)
 
 
@@ -247,6 +247,8 @@ async def test_update_status_clean(app, sample_dir):
     assert status.startswith("EDIT")
     assert "hello.py" in status
     assert "*" not in status
+    assert "| row:" in status
+    assert "col:" in status
 
 
 async def test_update_status_dirty(app, sample_dir):
@@ -256,7 +258,10 @@ async def test_update_status_dirty(app, sample_dir):
     editor.text = "dirty"
     await pilot.pause()
     the_app._update_status()
-    assert "*" in the_app.query_one(StatusBar).edit_status
+    status = the_app.query_one(StatusBar).edit_status
+    assert "*" in status
+    assert "| row:" in status
+    assert "col:" in status
 
 
 async def test_tab_toggles_status(app):
@@ -275,6 +280,17 @@ async def test_on_text_area_changed_marks_dirty(app, sample_dir):
     editor.text = "edited"
     await pilot.pause()
     assert "*" in the_app.query_one(StatusBar).edit_status
+
+
+async def test_on_text_area_selection_changed_updates_status(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    await pilot.pause()
+    the_app.on_text_area_selection_changed(None)
+    await pilot.pause()
+    status_after = the_app.query_one(StatusBar).edit_status
+    assert "| row:" in status_after
+    assert "col:" in status_after
 
 
 async def test_action_help(app):
