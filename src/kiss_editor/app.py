@@ -1,4 +1,3 @@
-import importlib.metadata
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 from typing import Iterable
@@ -20,6 +19,7 @@ from kiss_editor.commands import SearchProvider
 from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
 from kiss_editor.dialogs import ErrorDialog, HelpDialog
 from kiss_editor.screens import KissDirectoryTree, StartScreen
+from kiss_editor.updates import get_github_version, get_local_version, need_update
 
 IMAGE_EXTENSIONS = {
     ".png",
@@ -249,6 +249,8 @@ class Kiss(App):
 
 
 def run():
+    local_version = get_local_version()
+
     parser = ArgumentParser(
         description="KISS - a small terminal editor",
         usage="kiss [OPTIONS]",
@@ -261,9 +263,7 @@ To use:
         formatter_class=RawDescriptionHelpFormatter,
     )
     parser.add_argument("folder", type=Path, default=".", nargs="?")
-    parser.add_argument(
-        "--version", action="version", version=importlib.metadata.version("kiss-editor")
-    )
+    parser.add_argument("--version", action="version", version=local_version)
 
     args = parser.parse_args()
     original: Path = args.folder
@@ -279,6 +279,14 @@ To use:
 
     app.run()
     update_config_theme(app.theme)
+
+    github_version = get_github_version()
+    if github_version and need_update(local_version, github_version):
+        print(
+            f"A new version of kiss-editor is available: "
+            f"{local_version} -> {github_version}\n"
+            "To update, run: uv tool upgrade kiss-editor"
+        )
 
 
 if __name__ == "__main__":
