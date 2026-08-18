@@ -77,6 +77,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 - **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — ASCII logo on startup
+- **Update check** — notifies when a newer version is available on exit
 
 ---
 

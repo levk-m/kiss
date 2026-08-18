@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-import httpx
+import httpx2
 import pytest
 
 from kiss_editor.updates import get_github_version, need_update
@@ -15,23 +15,23 @@ def test_get_github_version_returns_latest_tag(monkeypatch):
         assert headers == {"User-Agent": "kiss/1.0"}
         return SimpleNamespace(json=lambda: {"tag_name": "v1.2.3"})
 
-    monkeypatch.setattr(httpx, "get", fake_get)
+    monkeypatch.setattr(httpx2, "get", fake_get)
     assert get_github_version() == "v1.2.3"
 
 
 def test_get_github_version_missing_tag_defaults(monkeypatch):
-    monkeypatch.setattr(httpx, "get", lambda *a, **k: SimpleNamespace(json=lambda: {}))
+    monkeypatch.setattr(httpx2, "get", lambda *a, **k: SimpleNamespace(json=lambda: {}))
     assert get_github_version() == "v0.0.0"
 
 
 @pytest.mark.parametrize(
     "exc",
     [
-        httpx.RequestError("network down"),
-        httpx.HTTPStatusError(
+        httpx2.RequestError("network down"),
+        httpx2.HTTPStatusError(
             "server error",
-            request=httpx.Request("GET", API_URL),
-            response=httpx.Response(500),
+            request=httpx2.Request("GET", API_URL),
+            response=httpx2.Response(500),
         ),
         ValueError("bad json"),
     ],
@@ -40,7 +40,7 @@ def test_get_github_version_errors_return_none(monkeypatch, exc):
     def boom(*args, **kwargs):
         raise exc
 
-    monkeypatch.setattr(httpx, "get", boom)
+    monkeypatch.setattr(httpx2, "get", boom)
     assert get_github_version() is None
 
 
@@ -57,7 +57,7 @@ def test_need_update_false_when_equal():
 
 
 def test_need_update_false_when_local_newer():
-    assert not need_update("2.0.0", "1.0.0")
+    assert not need_update("2.0.0", "1.5.5")
 
 
 def test_need_update_fills_missing_segments():

@@ -1,7 +1,7 @@
 from importlib.metadata import version
 from itertools import zip_longest
 
-import httpx
+import httpx2
 
 
 def get_local_version():
@@ -13,8 +13,8 @@ def get_github_version(
 ):
     headers = {"User-Agent": "kiss/1.0"}
     try:
-        response = httpx.get(url, timeout=3, headers=headers)
-    except (httpx.RequestError, httpx.HTTPStatusError, ValueError):
+        response = httpx2.get(url, timeout=3, headers=headers)
+    except (httpx2.RequestError, httpx2.HTTPStatusError, ValueError):
         return
     data = response.json()
     version = data.get("tag_name", "v0.0.0")
@@ -26,6 +26,6 @@ def need_update(local: str, github: str) -> bool:
     g_ver = github.lstrip("v")
     loc, git = l_ver.split("."), g_ver.split(".")
     for lc, g in zip_longest(loc, git, fillvalue="0"):
-        if int(g) > int(lc):
-            return True
+        if int(g) != int(lc):
+            return int(g) > int(lc)
     return False
