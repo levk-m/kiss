@@ -163,7 +163,7 @@ class Kiss(App):
             text_area = self.query_one(TextArea)
             row, col = text_area.cursor_location
             dirty = " *" if text_area.text != self.saved_text else ""
-            footer.edit_status = f"EDIT {name}{dirty} | row: {row} col: {col}"
+            footer.edit_status = f"EDIT {name}{dirty} | row: {row + 1} col: {col + 1}"
 
     def on_text_area_selection_changed(self, event):
         self._update_status()
