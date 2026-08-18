@@ -1,3 +1,4 @@
+import importlib.metadata
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 from typing import Iterable
@@ -259,14 +260,16 @@ To use:
         """,
         formatter_class=RawDescriptionHelpFormatter,
     )
-    parser.add_argument("folder", type=Path)
-    parser.add_argument("--version", action="version", version="KISS 0.2.0")
+    parser.add_argument("folder", type=Path, default=".", nargs="?")
+    parser.add_argument(
+        "--version", action="version", version=importlib.metadata.version("kiss-editor")
+    )
 
     args = parser.parse_args()
     original: Path = args.folder
 
     if not original.exists():
-        raise FileNotFoundError(f"Bad path: {original}")
+        parser.error(f"Bad path -> {original}")
 
     folder = original if original.is_dir() else original.parent
 
