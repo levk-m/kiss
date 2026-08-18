@@ -39,9 +39,18 @@ def test_run_with_file(monkeypatch, tmp_path, run_env):
     assert run_env["run_called"] is True
 
 
-def test_run_missing_path_raises(monkeypatch, tmp_path):
-    with pytest.raises(FileNotFoundError):
-        _run(monkeypatch, str(tmp_path / "nope"))
+def test_run_prints_update_notice(monkeypatch, tmp_path, run_env, capsys):
+    monkeypatch.setattr("kiss_editor.app.get_github_version", lambda: "v99.0.0")
+    monkeypatch.setattr("kiss_editor.app.get_local_version", lambda: "v0.0.1")
+    _run(monkeypatch, str(tmp_path))
+    out = capsys.readouterr().out
+    assert "A new version of kiss-editor is available" in out
+
+
+def test_run_with_missing_path_exits(monkeypatch):
+    with pytest.raises(SystemExit) as excinfo:
+        _run(monkeypatch, "/nonexistent/does-not-exist")
+    assert excinfo.value.code == 2
 
 
 def test_run_version_exits(monkeypatch):
