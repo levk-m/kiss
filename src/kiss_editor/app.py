@@ -18,8 +18,8 @@ from textual_image.widget import Image as ImageViewer
 from kiss_editor.commands import SearchProvider
 from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
 from kiss_editor.dialogs import ErrorDialog, HelpDialog
-from kiss_editor.screens import KissArea, KissDirectoryTree, StartScreen
 from kiss_editor.updates import get_github_version, get_local_version, need_update
+from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen
 
 IMAGE_EXTENSIONS = {
     ".png",
@@ -116,7 +116,7 @@ class Kiss(App):
     def compose(self):
         yield StatusBar()
         with Horizontal():
-            yield KissArea("", id="editor")
+            yield KissArea("", id="editor", config=self.config_data)
             yield ImageViewer(id="image-viewer")
             yield KissDirectoryTree(self.folder)
         yield Footer()

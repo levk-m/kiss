@@ -1,7 +1,7 @@
 from rich.style import Style
 from textual.widgets import DirectoryTree, Label
 
-from kiss_editor.screens import KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissDirectoryTree, StartScreen
 
 
 async def test_start_screen_shows_ascii_art(app):

@@ -132,6 +132,11 @@ class KissArea(TextArea):
     }
     """
 
+    def __init__(self, text="", *, config, **kwargs) -> None:
+        super().__init__()
+        self.config = config
+        self.indent = self.config.get("kiss", {}).get("indent-size", 4)
+
     async def _on_key(self, event):
         if event.key == "enter":
             event.stop()
@@ -147,13 +152,13 @@ class KissArea(TextArea):
                 if ch == " ":
                     indent += 1
                 elif ch == "\t":  # tab
-                    indent += 4
+                    indent += self.indent
                 else:
                     break
 
             text_before = curr_line[:col].rstrip()
             if text_before and text_before[-1] in [":", "(", "{", "["]:
-                indent += 4
+                indent += self.indent
 
             start, end = self.selection
             self._replace_via_keyboard("\n" + " " * indent, start, end)
