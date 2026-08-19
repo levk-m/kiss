@@ -78,6 +78,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — ASCII logo on startup
 - **Update check** — notifies when a newer version is available on exit
+- **Enter handling** — auto-indent to match the current line on newline
 
 ---
 
@@ -149,7 +150,8 @@ A copyable example lives at `examples/kiss_conf.json`.
         "show_line_numbers": true,
         "soft_wrap": true,
         "highlight_cursor_line": false,
-        "start-screen": false
+        "start-screen": false,
+        "indent-size": 4
     }
 }
 ```
@@ -162,6 +164,7 @@ A copyable example lives at `examples/kiss_conf.json`.
 | `kiss.soft_wrap`             | `true`          | Soft-wrap long lines          |
 | `kiss.highlight_cursor_line` | `false`         | Highlight current line        |
 | `kiss.start-screen`          | `false`         | Show splash screen on startup |
+| `kiss.indent-size`           | `4`             | Auto-indent width; `0` disables |
 
 ### Application themes
 
@@ -182,7 +185,6 @@ the current application theme's palette, so the editor blends with the app UI.
 
 ## TODO
 
-- **Enter handling** — auto-indent to match the current line on newline
 - **Custom command palette** — replace the default Textual palette with a bespoke one
 - **Search within file** — `Ctrl+F` (maybe)
 - **Markdown viewer** — two modes: render and edit

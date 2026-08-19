@@ -5,7 +5,8 @@
         "show_line_numbers": true,
         "soft_wrap": true,
         "highlight_cursor_line": false,
-        "start-screen": false
+        "start-screen": false,
+        "indent-size": 4
     },
     "themes": {
         "_its_just_example_of_avaible_themes":"",
