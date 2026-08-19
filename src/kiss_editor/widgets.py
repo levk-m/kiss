@@ -1,7 +1,7 @@
 from rich.style import Style
 from rich.text import Text
 from textual.screen import Screen
-from textual.widgets import DirectoryTree, Label
+from textual.widgets import DirectoryTree, Label, TextArea
 from textual.widgets._directory_tree import DirEntry
 from textual.widgets._tree import TreeNode
 
@@ -121,3 +121,46 @@ class KissDirectoryTree(DirectoryTree):
             text = Text(icon, style=text.style) + text[1:]
 
         return text
+
+
+class KissArea(TextArea):
+    CSS = """
+    TextArea {
+        dock: right;
+        width: 75%;
+        border: heavy $panel;
+    }
+    """
+
+    def __init__(self, text="", *, config, **kwargs) -> None:
+        super().__init__()
+        self.config = config
+        self.indent = self.config.get("kiss", {}).get("indent-size", 4)
+
+    async def _on_key(self, event):
+        if event.key == "enter":
+            event.stop()
+            event.prevent_default()
+
+            row, col = self.cursor_location
+            lines = self.text.split("\n")
+
+            curr_line = lines[row] if row < len(lines) else ""
+
+            indent = 0
+            for ch in curr_line:
+                if ch == " ":
+                    indent += 1
+                elif ch == "\t":  # tab
+                    indent += self.indent
+                else:
+                    break
+
+            text_before = curr_line[:col].rstrip()
+            if text_before and text_before[-1] in [":", "(", "{", "["]:
+                indent += self.indent
+
+            start, end = self.selection
+            self._replace_via_keyboard("\n" + " " * indent, start, end)
+            return
+        await super()._on_key(event)

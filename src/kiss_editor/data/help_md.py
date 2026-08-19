@@ -44,7 +44,8 @@ Changes take effect after restarting KISS.
         "show_line_numbers": true,
         "soft_wrap": true,
         "highlight_cursor_line": false,
-        "start-screen": false
+        "start-screen": false,
+        "indent-size": 4
     }
 }
 ```
@@ -57,6 +58,7 @@ Changes take effect after restarting KISS.
 | `soft_wrap` | `true` | Soft-wrap long lines |
 | `highlight_cursor_line` | `false` | Highlight the line under the cursor |
 | `start-screen` | `false` | Show the splash screen on startup |
+| `indent-size` | `4` | Auto-indent width on newline; `0` disables |
 
 ### Available application themes
 

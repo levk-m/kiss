@@ -9,7 +9,7 @@ from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.app import Kiss, StatusBar
 from kiss_editor.dialogs import ErrorDialog, HelpDialog
-from kiss_editor.screens import KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissDirectoryTree, StartScreen
 
 
 def make_image(path: Path) -> None:
