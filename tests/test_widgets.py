@@ -1,7 +1,8 @@
 from rich.style import Style
+from textual import events
 from textual.widgets import DirectoryTree, Label
 
-from kiss_editor.widgets import KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen
 
 
 async def test_start_screen_shows_ascii_art(app):
@@ -113,3 +114,57 @@ async def test_kiss_directory_tree_node_without_data(app, tmp_path):
         assert rendered is not None
     finally:
         node.data = saved
+
+
+async def test_kiss_area_enter_adds_extra_indent(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "  def foo():"
+    editor.cursor_location = (0, 12)
+    await editor._on_key(events.Key(key="enter", character=None))
+    assert editor.text == "  def foo():\n      "
+
+
+async def test_kiss_area_enter_counts_tab_as_indent(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "\tfoo"
+    editor.cursor_location = (0, 4)
+    await editor._on_key(events.Key(key="enter", character=None))
+    assert editor.text == "\tfoo\n    "
+
+
+async def test_kiss_area_enter_plain_text_no_indent(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "hello"
+    editor.cursor_location = (0, 5)
+    await editor._on_key(events.Key(key="enter", character=None))
+    assert editor.text == "hello\n"
+
+
+async def test_kiss_area_enter_mid_line_no_extra_indent(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "    foo"
+    editor.cursor_location = (0, 2)
+    await editor._on_key(events.Key(key="enter", character=None))
+    assert editor.text == "  \n      foo"
+
+
+async def test_kiss_area_enter_replaces_selection(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "replace me"
+    editor.selection = ((0, 0), (0, 7))
+    await editor._on_key(events.Key(key="enter", character=None))
+    assert editor.text == "\n me"
+
+
+async def test_kiss_area_non_enter_key_delegates_to_super(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "ab"
+    editor.cursor_location = (0, 2)
+    await editor._on_key(events.Key(key="x", character="x"))
+    assert editor.text == "abx"
