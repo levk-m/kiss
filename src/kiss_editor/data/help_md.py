@@ -45,7 +45,8 @@ Changes take effect after restarting KISS.
         "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false,
-        "indent-size": 4
+        "indent-size": 4,
+        "auto-closing-brackets": true
     }
 }
 ```
@@ -59,6 +60,7 @@ Changes take effect after restarting KISS.
 | `highlight_cursor_line` | `false` | Highlight the line under the cursor |
 | `start-screen` | `false` | Show the splash screen on startup |
 | `indent-size` | `4` | Auto-indent width on newline; `0` disables |
+| `auto-closing-brackets`| `true`| Auto-close `({[` |
 
 ### Available application themes
 

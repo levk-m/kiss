@@ -151,7 +151,8 @@ A copyable example lives at `examples/kiss_conf.json`.
         "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false,
-        "indent-size": 4
+        "indent-size": 4,
+        "auto-closing-brackets": true
     }
 }
 ```
@@ -165,6 +166,7 @@ A copyable example lives at `examples/kiss_conf.json`.
 | `kiss.highlight_cursor_line` | `false`         | Highlight current line        |
 | `kiss.start-screen`          | `false`         | Show splash screen on startup |
 | `kiss.indent-size`           | `4`             | Auto-indent width; `0` disables |
+| `auto-closing-brackets`      | `true`          | Auto-close `({[`              |
 
 ### Application themes
 

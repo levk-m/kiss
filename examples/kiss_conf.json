@@ -6,7 +6,8 @@
         "soft_wrap": true,
         "highlight_cursor_line": false,
         "start-screen": false,
-        "indent-size": 4
+        "indent-size": 4,
+        "auto-closing-brackets": true
     },
     "themes": {
         "_its_just_example_of_avaible_themes":"",

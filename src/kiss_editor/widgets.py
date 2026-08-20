@@ -137,9 +137,12 @@ class KissArea(TextArea):
         super().__init__(text, **kwargs)
         self.config = config
         self.indent = self.config.get("kiss", {}).get("indent-size", 4)
+        self.close_brackets = self.config.get("kiss", {}).get(
+            "auto-closing-brackets", True
+        )
 
     async def _on_key(self, event):
-        if event.character in ["{", "[", "("]:
+        if event.character in ["{", "[", "("] and self.close_brackets:
             event.stop()
             event.prevent_default()
             start, end = self.selection
