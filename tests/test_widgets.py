@@ -123,7 +123,7 @@ async def test_kiss_area_enter_adds_extra_indent(app):
     editor.text = "  def foo():"
     editor.cursor_location = (0, 12)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "  def foo():\n\n      "
+    assert editor.text == "  def foo():\n      "
 
 
 async def test_kiss_area_enter_counts_tab_as_indent(app):
@@ -132,7 +132,7 @@ async def test_kiss_area_enter_counts_tab_as_indent(app):
     editor.text = "\tfoo"
     editor.cursor_location = (0, 4)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "\tfoo\n\n    "
+    assert editor.text == "\tfoo\n    "
 
 
 async def test_kiss_area_enter_plain_text_no_indent(app):
@@ -141,7 +141,7 @@ async def test_kiss_area_enter_plain_text_no_indent(app):
     editor.text = "hello"
     editor.cursor_location = (0, 5)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "hello\n\n"
+    assert editor.text == "hello\n"
 
 
 async def test_kiss_area_enter_mid_line_no_extra_indent(app):
@@ -150,7 +150,7 @@ async def test_kiss_area_enter_mid_line_no_extra_indent(app):
     editor.text = "    foo"
     editor.cursor_location = (0, 2)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "  \n\n      foo"
+    assert editor.text == "  \n      foo"
 
 
 async def test_kiss_area_enter_replaces_selection(app):
@@ -159,7 +159,7 @@ async def test_kiss_area_enter_replaces_selection(app):
     editor.text = "replace me"
     editor.selection = ((0, 0), (0, 7))
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "\n\n me"
+    assert editor.text == "\n me"
 
 
 async def test_kiss_area_non_enter_key_delegates_to_super(app):

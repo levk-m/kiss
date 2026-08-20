@@ -143,9 +143,11 @@ class KissArea(TextArea):
             event.stop()
             event.prevent_default()
             start, end = self.selection
+            row, col = self.cursor_location
             self._replace_via_keyboard(
                 event.character + self.OPPOSITE[event.character], start, end
             )
+            self.move_cursor((row, col + 1))
             return
         if event.key == "enter":
             event.stop()
@@ -169,7 +171,7 @@ class KissArea(TextArea):
             if text_before and text_before[-1] in [":", "(", "{", "["]:
                 indent += self.indent
 
-            insert = "\n\n" + " " * indent
+            insert = "\n" + " " * indent
             start, end = self.selection
 
             self._replace_via_keyboard(insert, start, end)
