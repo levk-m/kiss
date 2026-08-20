@@ -1,3 +1,4 @@
+import pytest
 from rich.style import Style
 from textual import events
 from textual.widgets import DirectoryTree, Label
@@ -122,7 +123,7 @@ async def test_kiss_area_enter_adds_extra_indent(app):
     editor.text = "  def foo():"
     editor.cursor_location = (0, 12)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "  def foo():\n      "
+    assert editor.text == "  def foo():\n\n      "
 
 
 async def test_kiss_area_enter_counts_tab_as_indent(app):
@@ -131,7 +132,7 @@ async def test_kiss_area_enter_counts_tab_as_indent(app):
     editor.text = "\tfoo"
     editor.cursor_location = (0, 4)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "\tfoo\n    "
+    assert editor.text == "\tfoo\n\n    "
 
 
 async def test_kiss_area_enter_plain_text_no_indent(app):
@@ -140,7 +141,7 @@ async def test_kiss_area_enter_plain_text_no_indent(app):
     editor.text = "hello"
     editor.cursor_location = (0, 5)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "hello\n"
+    assert editor.text == "hello\n\n"
 
 
 async def test_kiss_area_enter_mid_line_no_extra_indent(app):
@@ -149,7 +150,7 @@ async def test_kiss_area_enter_mid_line_no_extra_indent(app):
     editor.text = "    foo"
     editor.cursor_location = (0, 2)
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "  \n      foo"
+    assert editor.text == "  \n\n      foo"
 
 
 async def test_kiss_area_enter_replaces_selection(app):
@@ -158,7 +159,7 @@ async def test_kiss_area_enter_replaces_selection(app):
     editor.text = "replace me"
     editor.selection = ((0, 0), (0, 7))
     await editor._on_key(events.Key(key="enter", character=None))
-    assert editor.text == "\n me"
+    assert editor.text == "\n\n me"
 
 
 async def test_kiss_area_non_enter_key_delegates_to_super(app):
@@ -168,3 +169,60 @@ async def test_kiss_area_non_enter_key_delegates_to_super(app):
     editor.cursor_location = (0, 2)
     await editor._on_key(events.Key(key="x", character="x"))
     assert editor.text == "abx"
+
+
+@pytest.mark.parametrize(
+    "key,character,pair",
+    [
+        ("left_curly_bracket", "{", "{}"),
+        ("left_square_bracket", "[", "[]"),
+        ("left_parenthesis", "(", "()"),
+    ],
+)
+async def test_kiss_area_open_bracket_autocloses(app, key, character, pair):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "ab"
+    editor.cursor_location = (0, 2)
+    await editor._on_key(events.Key(key=key, character=character))
+    assert editor.text == "ab" + pair
+
+
+@pytest.mark.parametrize(
+    "key,character",
+    [
+        ("right_curly_bracket", "}"),
+        ("right_square_bracket", "]"),
+        ("right_parenthesis", ")"),
+    ],
+)
+async def test_kiss_area_close_bracket_delegates_to_super(app, key, character):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "ab"
+    editor.cursor_location = (0, 2)
+    await editor._on_key(events.Key(key=key, character=character))
+    assert editor.text == "ab" + character
+
+
+async def test_kiss_area_open_bracket_replaces_selection(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "replace me"
+    editor.selection = ((0, 0), (0, 7))
+    await editor._on_key(events.Key(key="left_curly_bracket", character="{"))
+    assert editor.text == "{} me"
+
+
+async def test_kiss_area_open_bracket_via_pilot(app):
+    the_app, pilot = app
+    editor = the_app.query_one(KissArea)
+    editor.focus()
+    await pilot.press("{")
+    assert editor.text == "{}"
+
+
+async def test_kiss_area_keeps_id_and_text():
+    editor = KissArea("hello", id="editor", config={})
+    assert editor.id == "editor"
+    assert editor.text == "hello"

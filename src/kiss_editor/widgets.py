@@ -131,13 +131,22 @@ class KissArea(TextArea):
         border: heavy $panel;
     }
     """
+    OPPOSITE = {"{": "}", "(": ")", "[": "]"}
 
     def __init__(self, text="", *, config, **kwargs) -> None:
-        super().__init__()
+        super().__init__(text, **kwargs)
         self.config = config
         self.indent = self.config.get("kiss", {}).get("indent-size", 4)
 
     async def _on_key(self, event):
+        if event.character in ["{", "[", "("]:
+            event.stop()
+            event.prevent_default()
+            start, end = self.selection
+            self._replace_via_keyboard(
+                event.character + self.OPPOSITE[event.character], start, end
+            )
+            return
         if event.key == "enter":
             event.stop()
             event.prevent_default()
@@ -160,7 +169,9 @@ class KissArea(TextArea):
             if text_before and text_before[-1] in [":", "(", "{", "["]:
                 indent += self.indent
 
+            insert = "\n\n" + " " * indent
             start, end = self.selection
-            self._replace_via_keyboard("\n" + " " * indent, start, end)
+
+            self._replace_via_keyboard(insert, start, end)
             return
         await super()._on_key(event)
