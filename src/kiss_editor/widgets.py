@@ -131,18 +131,18 @@ class KissArea(TextArea):
         border: heavy $panel;
     }
     """
-    OPPOSITE = {"{": "}", "(": ")", "[": "]"}
+    OPPOSITE = {"{": "}", "(": ")", "[": "]", "'": "'", '"': '"'}
 
     def __init__(self, text="", *, config, **kwargs) -> None:
         super().__init__(text, **kwargs)
         self.config = config
         self.indent = self.config.get("kiss", {}).get("indent-size", 4)
-        self.close_brackets = self.config.get("kiss", {}).get(
-            "auto-closing-brackets", True
+        self.auto_close_pairs = self.config.get("kiss", {}).get(
+            "auto-close-pairs", True
         )
 
     async def _on_key(self, event):
-        if event.character in ["{", "[", "("] and self.close_brackets:
+        if event.character in ["{", "[", "(", "'", '"'] and self.auto_close_pairs:
             event.stop()
             event.prevent_default()
             start, end = self.selection
@@ -152,6 +152,7 @@ class KissArea(TextArea):
             )
             self.move_cursor((row, col + 1))
             return
+
         if event.key == "enter":
             event.stop()
             event.prevent_default()
