@@ -18,8 +18,25 @@ def load_config():
 
 
 def update_config_theme(theme_name: str):
-    data = load_config()
-    data.setdefault("kiss", {})
-    data["kiss"]["theme"] = theme_name
+    try:
+        with open(CONFIG_PATH, encoding="utf-8") as file:
+            raw = file.read()
+    except FileNotFoundError:
+        raw = ""
+    except OSError:
+        return
+    if raw.strip():
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            return
+    else:
+        data = {}
+    if not isinstance(data, dict):
+        return
+    kiss = data.setdefault("kiss", {})
+    if kiss.get("theme") == theme_name:
+        return
+    kiss["theme"] = theme_name
     with open(CONFIG_PATH, "w", encoding="utf-8") as file:
-        json.dump(data, file)
+        json.dump(data, file, indent=4)
