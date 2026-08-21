@@ -1,7 +1,8 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 from typing import Iterable
-
+import os
+from os import W_OK
 from textual import events
 from textual.app import App, ComposeResult, SystemCommand
 from textual.binding import Binding
@@ -203,7 +204,11 @@ class Kiss(App):
         if self.file is None or self._is_img(self.file):
             return
         editor = self.query_one(TextArea)
-        self.file.write_text(editor.text)
+        try:
+            self.file.write_text(editor.text)
+        except OSError as e:
+            self.app.push_screen(ErrorDialog("Error", f"Couldn't save file: {e}"))
+            return
         self.saved_text = editor.text
         self._update_status()
 
@@ -263,14 +268,21 @@ To use:
     args = parser.parse_args()
     original: Path = args.folder
 
-    if not original.exists():
-        parser.error(f"Bad path -> {original}")
+    if original.exists():
+        folder = original if original.is_dir() else original.parent
 
-    folder = original if original.is_dir() else original.parent
-
-    app = Kiss(folder=folder)
-    if original.is_file():
-        app.file = original
+        app = Kiss(folder=folder)
+        if original.is_file():
+            app.file = original
+    else:
+        if original.parent.exists() and original.parent.is_dir():
+            if not os.access(original.parent, W_OK):
+                parser.error(f"No write permission -> {original.parent}")
+            folder = original.parent
+            app = Kiss(folder=folder)
+            app.file = original
+        else:
+            parser.error(f"Bad path -> {original}")
 
     app.run()
     update_config_theme(app.theme)

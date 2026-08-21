@@ -212,6 +212,29 @@ async def test_action_save_file_writes_and_clears_dirty(app, sample_dir):
     assert "*" not in the_app.query_one(StatusBar).edit_status
 
 
+async def test_action_save_file_error_shows_dialog(app, sample_dir, monkeypatch):
+    target = sample_dir / "hello.py"
+    real_write = Path.write_text
+
+    def boom(self, *args, **kwargs):
+        if self == target:
+            raise PermissionError("denied")
+        return real_write(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", boom)
+    the_app, pilot = app
+    the_app.edit_file(target)
+    await pilot.pause()
+    the_app.query_one(TextArea).text = "changed"
+    await pilot.pause()
+
+    the_app.action_save_file()
+    await pilot.pause()
+    assert isinstance(the_app.screen, ErrorDialog)
+    assert target.read_text() == "print('hi')\n"
+    assert the_app.saved_text == "print('hi')\n"
+
+
 async def test_action_save_file_without_file_is_noop(app):
     the_app, _ = app
     the_app.file = None

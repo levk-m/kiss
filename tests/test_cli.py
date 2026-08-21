@@ -53,6 +53,29 @@ def test_run_with_missing_path_exits(monkeypatch):
     assert excinfo.value.code == 2
 
 
+def test_run_with_unwritable_parent_exits(monkeypatch, capsys):
+    monkeypatch.setattr("kiss_editor.app.os.access", lambda *args, **kwargs: False)
+    with pytest.raises(SystemExit) as excinfo:
+        _run(monkeypatch, "/test")
+    assert excinfo.value.code == 2
+    assert "No write permission" in capsys.readouterr().err
+
+
+def test_run_with_new_file_in_writable_dir(monkeypatch, tmp_path, run_env):
+    created = {}
+    real_init = app_module.Kiss.__init__
+
+    def fake_init(self, folder):
+        real_init(self, folder)
+        created["app"] = self
+
+    monkeypatch.setattr(app_module.Kiss, "__init__", fake_init)
+    target = tmp_path / "new_file.txt"
+    _run(monkeypatch, str(target))
+    assert run_env["run_called"] is True
+    assert created["app"].file == target
+
+
 def test_run_version_exits(monkeypatch):
     with pytest.raises(SystemExit) as excinfo:
         _run(monkeypatch, "--version")
