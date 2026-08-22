@@ -1,3 +1,4 @@
+import builtins
 import json
 
 from kiss_editor import config
@@ -89,3 +90,17 @@ def test_update_config_theme_same_theme_no_rewrite(config_path):
     config_path.write_text(json.dumps({"kiss": {"theme": "nord"}}))
     config.update_config_theme("nord")
     assert json.loads(config_path.read_text()) == {"kiss": {"theme": "nord"}}
+
+
+def test_update_config_theme_write_os_error_returns(config_path, monkeypatch):
+    config_path.write_text(json.dumps({"kiss": {"theme": "old"}}))
+    real_open = builtins.open
+
+    def boom_on_write(file, mode="r", *args, **kwargs):
+        if mode == "w":
+            raise PermissionError("denied")
+        return real_open(file, mode, *args, **kwargs)
+
+    monkeypatch.setattr("builtins.open", boom_on_write)
+    config.update_config_theme("nord")
+    assert json.loads(config_path.read_text()) == {"kiss": {"theme": "old"}}

@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Center, Vertical, VerticalScroll
 from textual.screen import ModalScreen
-from textual.widgets import Button, Markdown, Static
+from textual.widgets import Button, Input, Markdown, Static
 from textual.widgets._button import ButtonVariant
 
 from kiss_editor.data.help_md import HELP
@@ -131,3 +131,37 @@ class HelpDialog(ModalScreen[None]):
     def on_markdown_link_clicked(self, event) -> None:
         # just open in browser
         webbrowser.open(event.href)
+
+
+class InputDialog(ModalScreen[str | None]):
+    DEFAULT_CSS = """
+    InputDialog {
+        align: center middle;
+    }
+
+    InputDialog > Vertical {
+        background: $boost;
+        min-width: 30%;
+        width: auto;
+        height: auto;
+        border: solid $primary;
+        padding: 1 2;
+    }
+    """
+
+    BINDINGS = [Binding("escape", "dismiss(None)", "", show=False)]
+
+    def __init__(self, title: str) -> None:
+        super().__init__()
+        self._title = title
+
+    def compose(self) -> ComposeResult:
+        with Vertical():
+            yield Static(self._title)
+            yield Input()
+
+    def on_mount(self) -> None:
+        self.query_one(Input).focus()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        self.dismiss(event.value)

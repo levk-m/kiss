@@ -2,8 +2,8 @@ from types import SimpleNamespace
 
 import kiss_editor.dialogs as dialogs
 from kiss_editor.data.help_md import HELP
-from kiss_editor.dialogs import ErrorDialog, HelpDialog, TextDialog
-from textual.widgets import Button, Markdown, Static
+from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog, TextDialog
+from textual.widgets import Button, Input, Markdown, Static
 
 
 def test_text_dialog_attributes():
@@ -85,3 +85,35 @@ def test_help_dialog_link_opens_browser(monkeypatch):
     dialog = HelpDialog()
     dialog.on_markdown_link_clicked(SimpleNamespace(href="https://example.com"))
     assert opened == ["https://example.com"]
+
+
+async def test_input_dialog_renders_and_focuses_input(app):
+    the_app, pilot = app
+    await the_app.push_screen(InputDialog("Go to line"))
+    await pilot.pause()
+    dialog = the_app.screen
+    assert isinstance(dialog, InputDialog)
+    assert any("Go to line" in s.content for s in dialog.query(Static))
+    assert dialog.query_one(Input).has_focus
+
+
+async def test_input_dialog_enter_dismisses_with_value(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(InputDialog("Go to line"), results.append)
+    await pilot.pause()
+    the_app.screen.query_one(Input).value = "42"
+    await pilot.press("enter")
+    await pilot.pause()
+    assert results == ["42"]
+    assert not isinstance(the_app.screen, InputDialog)
+
+
+async def test_input_dialog_escape_dismisses_with_none(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(InputDialog("Go to line"), results.append)
+    await pilot.pause()
+    await pilot.press("escape")
+    await pilot.pause()
+    assert results == [None]

@@ -181,3 +181,7 @@ class KissArea(TextArea):
             self._replace_via_keyboard(insert, start, end)
             return
         await super()._on_key(event)
+
+    def action_goto_line(self, line: int, column: int = 0) -> None:
+        line = max(1, line)
+        self.move_cursor((line - 1, column))
