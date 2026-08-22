@@ -60,3 +60,34 @@ def test_update_config_theme_handles_empty_file(config_path):
     config_path.write_text("")
     config.update_config_theme("nord")
     assert json.loads(config_path.read_text()) == {"kiss": {"theme": "nord"}}
+
+
+def test_update_config_theme_os_error_leaves_file_untouched(
+    config_path, monkeypatch
+):
+    config_path.write_text(json.dumps({"kiss": {"theme": "old"}}))
+
+    def boom(*args, **kwargs):
+        raise OSError("boom")
+
+    monkeypatch.setattr("builtins.open", boom)
+    config.update_config_theme("nord")
+    assert json.loads(config_path.read_text()) == {"kiss": {"theme": "old"}}
+
+
+def test_update_config_theme_invalid_json_no_write(config_path):
+    config_path.write_text("{ not json")
+    config.update_config_theme("nord")
+    assert config_path.read_text() == "{ not json"
+
+
+def test_update_config_theme_non_dict_json_no_write(config_path):
+    config_path.write_text("[1, 2]")
+    config.update_config_theme("nord")
+    assert config_path.read_text() == "[1, 2]"
+
+
+def test_update_config_theme_same_theme_no_rewrite(config_path):
+    config_path.write_text(json.dumps({"kiss": {"theme": "nord"}}))
+    config.update_config_theme("nord")
+    assert json.loads(config_path.read_text()) == {"kiss": {"theme": "nord"}}
