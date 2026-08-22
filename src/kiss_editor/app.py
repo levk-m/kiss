@@ -19,7 +19,7 @@ from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.commands import SearchProvider
 from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
-from kiss_editor.dialogs import ErrorDialog, HelpDialog
+from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog
 from kiss_editor.updates import get_github_version, get_local_version, need_update
 from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen
 
@@ -106,6 +106,7 @@ class Kiss(App):
         Binding(
             key="ctrl+o", action="edit_config", description="open config", show=False
         ),
+        Binding(key="ctrl+g", action="goto_line", description="go to line", show=True),
     ]
 
     def __init__(self, folder):
@@ -132,6 +133,15 @@ class Kiss(App):
 
         if self.file:
             self.edit_file(self.file)
+
+    def action_goto_line(self) -> None:
+        def go(line: str | None) -> None:
+            if line and line.strip().isdigit():
+                editor = self.query_one(KissArea)
+                editor.action_goto_line(int(line))
+                editor.focus()
+
+        self.push_screen(InputDialog("Go to line"), go)
 
     def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:
         for cmd in super().get_system_commands(screen):
