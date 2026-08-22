@@ -226,3 +226,35 @@ async def test_kiss_area_keeps_id_and_text():
     editor = KissArea("hello", id="editor", config={})
     assert editor.id == "editor"
     assert editor.text == "hello"
+
+
+async def test_kiss_area_goto_line_is_one_based(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "one\ntwo\nthree"
+    editor.action_goto_line(2)
+    assert editor.cursor_location == (1, 0)
+
+
+async def test_kiss_area_goto_line_clamps_below_one(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "one\ntwo"
+    editor.action_goto_line(-5)
+    assert editor.cursor_location == (0, 0)
+
+
+async def test_kiss_area_goto_line_clamps_past_end(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "one\ntwo"
+    editor.action_goto_line(9999)
+    assert editor.cursor_location == (1, 0)
+
+
+async def test_kiss_area_goto_line_with_column(app):
+    the_app, _ = app
+    editor = the_app.query_one(KissArea)
+    editor.text = "hello\nworld"
+    editor.action_goto_line(2, 3)
+    assert editor.cursor_location == (1, 3)

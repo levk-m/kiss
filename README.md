@@ -72,6 +72,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 
 - **File tree** — browse and open files with custom icons per file type
 - **Syntax highlighting** — auto-detected from the file
+- **Go to line** (`Ctrl+G`) — enter a number, jump straight there
 - **Command palette** (`Ctrl+P`) — fuzzy-find files, switch themes
 - **Image viewer** — open images directly in the terminal (requires Kitty, Sixel or iTerm support)
 - **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
@@ -96,6 +97,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 | `Ctrl+Left` / `Ctrl+Right` | Page left / right |
 | `Alt+Left`                 | Word start        |
 | `Alt+Right`                | Word end          |
+| `Ctrl+G`                   | Go to line        |
 
 ### Selection
 

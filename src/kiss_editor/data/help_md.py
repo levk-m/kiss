@@ -92,6 +92,7 @@ the current application theme's palette, so the editor blends with the app UI.
 | PgDn / Ctrl+PgDn | Page down |
 | Ctrl+Left / Ctrl+Right | Move by word |
 | Alt+Left / Alt+Right | Move to word start / end |
+| Ctrl+G | Go to line (enter a line number) |
 
 ### Selection
 

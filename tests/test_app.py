@@ -2,13 +2,14 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 from PIL import Image
 from textual.command import CommandPalette
-from textual.widgets import Footer, TextArea
+from textual.widgets import Footer, Input, TextArea
 from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.app import Kiss, StatusBar
-from kiss_editor.dialogs import ErrorDialog, HelpDialog
+from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog
 from kiss_editor.widgets import KissDirectoryTree, StartScreen
 
 
@@ -338,6 +339,77 @@ async def test_action_command_palette(app):
     the_app.action_command_palette()
     await pilot.pause()
     assert isinstance(the_app.screen, CommandPalette)
+
+
+async def test_ctrl_g_binding_opens_input_dialog(app):
+    the_app, pilot = app
+    the_app.query_one(TextArea).focus()
+    await pilot.pause()
+    await pilot.press("ctrl+g")
+    await pilot.pause()
+    assert isinstance(the_app.screen, InputDialog)
+
+
+async def test_action_goto_line_valid_number_moves_cursor_and_focuses_editor(app):
+    the_app, pilot = app
+    editor = the_app.query_one(TextArea)
+    editor.text = "one\ntwo\nthree"
+    editor.focus()
+    await pilot.pause()
+
+    await pilot.press("ctrl+g")
+    await pilot.pause()
+
+    the_app.screen.query_one(Input).value = "2"
+    await pilot.press("enter")
+    await pilot.pause()
+
+    assert not isinstance(the_app.screen, InputDialog)
+    assert editor.cursor_location == (1, 0)
+    assert editor.has_focus
+
+
+@pytest.mark.parametrize(
+    "keys",
+    [
+        ["escape"],
+        ["enter"],
+        ["a", "b", "c", "enter"],
+        ["-", "3", "enter"],
+    ],
+    ids=["cancel", "empty", "not-a-number", "negative"],
+)
+async def test_action_goto_line_invalid_input_is_noop(app, keys):
+    the_app, pilot = app
+    editor = the_app.query_one(TextArea)
+    editor.text = "one\ntwo\nthree"
+    await pilot.pause()
+
+    the_app.action_goto_line()
+    await pilot.pause()
+
+    await pilot.press(*keys)
+    await pilot.pause()
+
+    assert not isinstance(the_app.screen, InputDialog)
+    assert editor.cursor_location == (0, 0)
+
+
+async def test_action_goto_line_accepts_whitespace_padded_number(app):
+    the_app, pilot = app
+    editor = the_app.query_one(TextArea)
+    editor.text = "one\ntwo\nthree"
+    await pilot.pause()
+
+    the_app.action_goto_line()
+    await pilot.pause()
+
+    the_app.screen.query_one(Input).value = " 2 "
+    await pilot.press("enter")
+    await pilot.pause()
+
+    assert not isinstance(the_app.screen, InputDialog)
+    assert editor.cursor_location == (1, 0)
 
 
 async def test_directory_tree_file_selected(app, sample_dir):
