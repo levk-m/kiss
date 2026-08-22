@@ -62,9 +62,7 @@ def test_update_config_theme_handles_empty_file(config_path):
     assert json.loads(config_path.read_text()) == {"kiss": {"theme": "nord"}}
 
 
-def test_update_config_theme_os_error_leaves_file_untouched(
-    config_path, monkeypatch
-):
+def test_update_config_theme_os_error_leaves_file_untouched(config_path, monkeypatch):
     config_path.write_text(json.dumps({"kiss": {"theme": "old"}}))
 
     def boom(*args, **kwargs):

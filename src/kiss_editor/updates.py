@@ -19,7 +19,7 @@ def get_github_version(
         with urllib.request.urlopen(r, timeout=3) as response:
             raw = response.read().decode("utf-8")
             data = json.loads(raw)
-    except (HTTPError, URLError, JSONDecodeError):
+    except (HTTPError, URLError, JSONDecodeError, UnicodeDecodeError):
         return
     version = data.get("tag_name", "v0.0.0")
     return version
