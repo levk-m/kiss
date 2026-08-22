@@ -1,6 +1,6 @@
-from types import SimpleNamespace
+import urllib.request
+from urllib.error import HTTPError, URLError
 
-import httpx2
 import pytest
 
 from kiss_editor.updates import get_github_version, need_update
@@ -8,39 +8,67 @@ from kiss_editor.updates import get_github_version, need_update
 API_URL = "https://api.github.com/repos/levk-m/kiss/releases/latest"
 
 
-def test_get_github_version_returns_latest_tag(monkeypatch):
-    def fake_get(url, timeout, headers):
-        assert url == API_URL
-        assert timeout == 3
-        assert headers == {"User-Agent": "kiss/1.0"}
-        return SimpleNamespace(json=lambda: {"tag_name": "v1.2.3"})
+class FakeResponse:
+    def __init__(self, payload: bytes):
+        self._payload = payload
 
-    monkeypatch.setattr(httpx2, "get", fake_get)
+    def read(self) -> bytes:
+        return self._payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+
+def test_get_github_version_returns_latest_tag(monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        captured["timeout"] = timeout
+        captured["headers"] = dict(req.headers)
+        return FakeResponse(b'{"tag_name": "v1.2.3"}')
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
     assert get_github_version() == "v1.2.3"
+    assert captured["url"] == API_URL
+    assert captured["timeout"] == 3
+    assert captured["headers"]["User-agent"] == "kiss/1.0"
 
 
 def test_get_github_version_missing_tag_defaults(monkeypatch):
-    monkeypatch.setattr(httpx2, "get", lambda *a, **k: SimpleNamespace(json=lambda: {}))
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout: FakeResponse(b"{}"),
+    )
     assert get_github_version() == "v0.0.0"
 
 
 @pytest.mark.parametrize(
     "exc",
     [
-        httpx2.RequestError("network down"),
-        httpx2.HTTPStatusError(
-            "server error",
-            request=httpx2.Request("GET", API_URL),
-            response=httpx2.Response(500),
-        ),
-        ValueError("bad json"),
+        URLError("network down"),
+        HTTPError(API_URL, 500, "Server Error", None, None),
     ],
 )
 def test_get_github_version_errors_return_none(monkeypatch, exc):
     def boom(*args, **kwargs):
         raise exc
 
-    monkeypatch.setattr(httpx2, "get", boom)
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+    assert get_github_version() is None
+
+
+def test_get_github_version_bad_json_returns_none(monkeypatch):
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout: FakeResponse(b"not json"),
+    )
     assert get_github_version() is None
 
 
