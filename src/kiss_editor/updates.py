@@ -1,7 +1,9 @@
+import json
+import urllib.request
 from importlib.metadata import version
 from itertools import zip_longest
-
-import httpx2
+from json import JSONDecodeError
+from urllib.error import HTTPError, URLError
 
 
 def get_local_version():
@@ -12,11 +14,13 @@ def get_github_version(
     url: str = "https://api.github.com/repos/levk-m/kiss/releases/latest",
 ):
     headers = {"User-Agent": "kiss/1.0"}
+    r = urllib.request.Request(url, headers=headers)
     try:
-        response = httpx2.get(url, timeout=3, headers=headers)
-    except (httpx2.RequestError, httpx2.HTTPStatusError, ValueError):
+        with urllib.request.urlopen(r, timeout=3) as response:
+            raw = response.read().decode("utf-8")
+            data = json.loads(raw)
+    except (HTTPError, URLError, JSONDecodeError, UnicodeDecodeError):
         return
-    data = response.json()
     version = data.get("tag_name", "v0.0.0")
     return version
 

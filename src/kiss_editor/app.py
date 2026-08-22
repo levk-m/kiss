@@ -1,8 +1,9 @@
+import os
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from os import W_OK
 from pathlib import Path
 from typing import Iterable
-import os
-from os import W_OK
+
 from textual import events
 from textual.app import App, ComposeResult, SystemCommand
 from textual.binding import Binding
@@ -173,7 +174,7 @@ class Kiss(App):
             return self._view_image(path)
         try:
             self.file = path
-            config = self.config_data.get("kiss")
+            config = self.config_data.get("kiss", {})
 
             text_editor = self.query_one(TextArea)
             text_editor.display = True
@@ -191,7 +192,7 @@ class Kiss(App):
             text_editor.soft_wrap = config.get("soft_wrap", True)
 
             text_editor.indent_type = "spaces"
-            text_editor.indent_width = 4
+            text_editor.indent_width = config.get("indent-size", 4)
 
             text_editor.highlight_cursor_line = config.get(
                 "highlight_cursor_line", False
