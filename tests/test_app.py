@@ -10,7 +10,7 @@ from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.app import Kiss, StatusBar
 from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog
-from kiss_editor.widgets import KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissDirectoryTree, StartScreen, YesNoDialog
 
 
 def make_image(path: Path) -> None:
@@ -438,3 +438,164 @@ def test_status_bar_watch_swallows_no_matches():
     bar = StatusBar()
     bar.edit_status = "TEST"
     assert bar.edit_status == "TEST"
+
+
+async def test_action_quit_no_changes_exits(app):
+    the_app, pilot = app
+    the_app.file = None
+    the_app.saved_text = ""
+    editor = the_app.query_one(TextArea)
+    editor.text = ""
+    await pilot.pause()
+    exit_called = []
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.exit = mock_exit
+    await the_app.action_quit()
+    await pilot.pause()
+    assert exit_called
+
+
+async def test_action_quit_unsaved_changes_shows_dialog(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "modified"
+    await pilot.pause()
+    await the_app.action_quit()
+    await pilot.pause()
+    assert isinstance(the_app.screen, YesNoDialog)
+    assert "Save file" in str(the_app.screen.query_one("#question").content)
+
+
+async def test_save_or_exit_true_calls_save_and_exit(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "modified"
+    await pilot.pause()
+    save_called = []
+    exit_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.exit = mock_exit
+    the_app.save_or_exit(True)
+    await pilot.pause()
+    assert save_called
+    assert exit_called
+
+
+async def test_save_or_exit_false_just_exit(app):
+    the_app, pilot = app
+    exit_called = []
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.exit = mock_exit
+    the_app.save_or_exit(False)
+    await pilot.pause()
+    assert exit_called
+
+
+async def test_quit_dialog_yes_saves_and_exits(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "should save this"
+    await pilot.pause()
+    save_called = []
+    exit_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.exit = mock_exit
+    await the_app.action_quit()
+    await pilot.pause()
+    the_app.screen.query_one("#yes").press()
+    await pilot.pause()
+    assert save_called
+    assert exit_called
+    assert not isinstance(the_app.screen, YesNoDialog)
+
+
+async def test_quit_dialog_no_exits_without_save(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "should not save"
+    await pilot.pause()
+    save_called = []
+    exit_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.exit = mock_exit
+    await the_app.action_quit()
+    await pilot.pause()
+    the_app.screen.query_one("#no").press()
+    await pilot.pause()
+    assert not save_called
+    assert exit_called
+    assert not isinstance(the_app.screen, YesNoDialog)
+
+
+async def test_quit_dialog_escape_exits_without_save(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "should not save"
+    await pilot.pause()
+    save_called = []
+    exit_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.exit = mock_exit
+    # Escape binding calls app.pop_screen() which dismisses with None
+    # The save_or_exit callback receives None (falsy) -> just exits
+    the_app.save_or_exit(None)
+    await pilot.pause()
+    assert not save_called
+    assert exit_called
+
+
+async def test_quit_unsaved_image_file_no_dialog(app, tmp_path):
+    the_app, pilot = app
+    img = tmp_path / "photo.png"
+    make_image(img)
+    the_app.edit_file(img)
+    await pilot.pause()
+    exit_called = []
+
+    def mock_exit():
+        exit_called.append(True)
+
+    the_app.exit = mock_exit
+    await the_app.action_quit()
+    await pilot.pause()
+    assert exit_called
+    assert not isinstance(the_app.screen, YesNoDialog)

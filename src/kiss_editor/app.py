@@ -21,7 +21,7 @@ from kiss_editor.commands import SearchProvider
 from kiss_editor.config import CONFIG_PATH, load_config, update_config_theme
 from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog
 from kiss_editor.updates import get_github_version, get_local_version, need_update
-from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen, YesNoDialog
 
 IMAGE_EXTENSIONS = {
     ".png",
@@ -222,6 +222,18 @@ class Kiss(App):
             return
         self.saved_text = editor.text
         self._update_status()
+
+    async def action_quit(self):
+        text_area = self.query_one(KissArea)
+        if text_area.text != self.saved_text:
+            self.app.push_screen(YesNoDialog("Quit", "Save file ?"), self.save_or_exit)
+        else:
+            self.app.exit()
+
+    def save_or_exit(self, result):
+        if result:
+            self.action_save_file()
+        self.app.exit()
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
