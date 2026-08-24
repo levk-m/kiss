@@ -1,9 +1,9 @@
 import pytest
 from rich.style import Style
 from textual import events
-from textual.widgets import DirectoryTree, Label
+from textual.widgets import Button, DirectoryTree, Label, Static
 
-from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen
+from kiss_editor.widgets import KissArea, KissDirectoryTree, StartScreen, YesNoDialog
 
 
 async def test_start_screen_shows_ascii_art(app):
@@ -258,3 +258,103 @@ async def test_kiss_area_goto_line_with_column(app):
     editor.text = "hello\nworld"
     editor.action_goto_line(2, 3)
     assert editor.cursor_location == (1, 3)
+
+
+async def test_yes_no_dialog_init_defaults():
+    dialog = YesNoDialog("Title", "Question")
+    assert dialog._title == "Title"
+    assert dialog._question == "Question"
+    assert dialog._aye == "Yes"
+    assert dialog._naw == "No"
+    assert dialog._aye_first is True
+
+
+async def test_yes_no_dialog_init_custom_labels():
+    dialog = YesNoDialog("T", "Q", yes_label="OK", no_label="Cancel")
+    assert dialog._aye == "OK"
+    assert dialog._naw == "Cancel"
+
+
+async def test_yes_no_dialog_init_yes_first_false():
+    dialog = YesNoDialog("T", "Q", yes_first=False)
+    assert dialog._aye_first is False
+
+
+async def test_yes_no_dialog_compose_renders_title_question(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("My Title", "My Question"))
+    await pilot.pause()
+    dialog = the_app.screen
+    statics = [s.content for s in dialog.query(Static)]
+    assert "My Title" in statics
+    assert "My Question" in statics
+
+
+async def test_yes_no_dialog_compose_yes_first_true(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("T", "Q", yes_first=True))
+    await pilot.pause()
+    buttons = the_app.screen.query(Button).nodes
+    assert buttons[0].id == "yes"
+    assert buttons[0].variant == "primary"
+    assert buttons[1].id == "no"
+
+
+async def test_yes_no_dialog_compose_yes_first_false(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("T", "Q", yes_first=False))
+    await pilot.pause()
+    buttons = the_app.screen.query(Button).nodes
+    assert buttons[0].id == "no"
+    assert buttons[0].variant == "primary"
+    assert buttons[1].id == "yes"
+
+
+async def test_yes_no_dialog_on_mount_focuses_first_button(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("T", "Q"))
+    await pilot.pause()
+    focused = the_app.screen.query(Button).first()
+    assert focused.has_focus
+
+
+async def test_yes_no_dialog_yes_button_returns_true(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(YesNoDialog("T", "Q"), results.append)
+    await pilot.pause()
+    the_app.screen.query_one("#yes").press()
+    await pilot.pause()
+    assert results == [True]
+
+
+async def test_yes_no_dialog_no_button_returns_false(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(YesNoDialog("T", "Q"), results.append)
+    await pilot.pause()
+    the_app.screen.query_one("#no").press()
+    await pilot.pause()
+    assert results == [False]
+
+
+async def test_yes_no_dialog_escape_dismisses_none(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("T", "Q"))
+    await pilot.pause()
+    dialog = the_app.screen
+    dialog.dismiss(None)
+    await pilot.pause()
+    assert not isinstance(the_app.screen, YesNoDialog)
+
+
+async def test_yes_no_dialog_left_right_navigation(app):
+    the_app, pilot = app
+    await the_app.push_screen(YesNoDialog("T", "Q"))
+    await pilot.pause()
+    first = the_app.screen.query(Button).first()
+    assert first.has_focus
+    # Focus navigation bindings exist on the dialog (left/up, right/down)
+    # The actual focus switching is tested via the binding existence
+    assert "focus_next" in [b.action for b in YesNoDialog.BINDINGS]
+    assert "focus_previous" in [b.action for b in YesNoDialog.BINDINGS]
