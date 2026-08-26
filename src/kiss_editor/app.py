@@ -13,7 +13,7 @@ from textual.css.query import NoMatches
 from textual.highlight import guess_language
 from textual.reactive import reactive
 from textual.screen import Screen
-from textual.widgets import Footer, Label, TextArea
+from textual.widgets import Footer, Label
 from textual.widgets._text_area import LanguageDoesNotExist
 from textual_image.widget import Image as ImageViewer
 
@@ -168,7 +168,7 @@ class Kiss(App):
         elif name is None:
             footer.edit_status = "EDIT"
         else:
-            text_area = self.query_one(TextArea)
+            text_area = self.query_one(KissArea)
             row, col = text_area.cursor_location
             dirty = " *" if text_area.text != self.saved_text else ""
             footer.edit_status = f"EDIT {name}{dirty} | row: {row + 1} col: {col + 1}"
@@ -180,13 +180,19 @@ class Kiss(App):
         self._update_status()
 
     def edit_file(self, path):
+        text_editor = self.query_one(KissArea)
+        if text_editor.text != self.saved_text:
+            self.app.push_screen(
+                YesNoDialog("Open another file", "Save this ?"), self.save_or_continue
+            )
+            return
+
         if self._is_img(path):
             return self._view_image(path)
         try:
             self.file = path
             config = self.config_data.get("kiss", {})
 
-            text_editor = self.query_one(TextArea)
             text_editor.display = True
             self.query_one(ImageViewer).display = False
             text_editor.text = self.file.read_text() if path.is_file() else ""
@@ -214,7 +220,7 @@ class Kiss(App):
     def action_save_file(self):
         if self.file is None or self._is_img(self.file):
             return
-        editor = self.query_one(TextArea)
+        editor = self.query_one(KissArea)
         try:
             self.file.write_text(editor.text)
         except OSError as e:
@@ -234,6 +240,11 @@ class Kiss(App):
         if result:
             self.action_save_file()
         self.app.exit()
+
+    def save_or_continue(self, result):
+        if result:
+            self.action_save_file()
+        return
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
@@ -264,7 +275,7 @@ class Kiss(App):
             viewer.image = path
             self.file = path
             self.saved_text = ""
-            self.query_one(TextArea).display = False
+            self.query_one(KissArea).display = False
             viewer.display = True
             self._update_status()
         except Exception as e:

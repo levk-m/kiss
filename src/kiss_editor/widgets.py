@@ -128,7 +128,7 @@ class KissDirectoryTree(DirectoryTree):
 
 class KissArea(TextArea):
     CSS = """
-    TextArea {
+    KissArea {
         dock: right;
         width: 75%;
         border: heavy $panel;
