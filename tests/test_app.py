@@ -421,6 +421,70 @@ async def test_directory_tree_file_selected(app, sample_dir):
     assert the_app.query_one(StatusBar).edit_status.startswith("EDIT")
 
 
+async def test_pre_edit_file_dirty_shows_dialog(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "modified"
+    await pilot.pause()
+    assert the_app.saved_text != editor.text
+
+    the_app.pre_edit_file(sample_dir / "notes.txt")
+    await pilot.pause()
+    assert isinstance(the_app.screen, YesNoDialog)
+    editor = the_app.query_one(TextArea)
+    assert editor.text == "modified"
+
+
+async def test_pre_edit_file_clean_opens_directly(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    await pilot.pause()
+
+    the_app.pre_edit_file(sample_dir / "notes.txt")
+    await pilot.pause()
+    assert not isinstance(the_app.screen, YesNoDialog)
+    assert the_app.query_one(TextArea).text == "some notes\n"
+
+
+async def test_save_or_continue_true_saves_and_edits(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "modified"
+    await pilot.pause()
+    save_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.save_or_continue(True, sample_dir / "notes.txt")
+    await pilot.pause()
+    assert save_called
+    assert the_app.file == sample_dir / "notes.txt"
+    assert the_app.query_one(TextArea).text == "some notes\n"
+
+
+async def test_save_or_continue_false_just_edits(app, sample_dir):
+    the_app, pilot = app
+    the_app.edit_file(sample_dir / "hello.py")
+    editor = the_app.query_one(TextArea)
+    editor.text = "modified"
+    await pilot.pause()
+    save_called = []
+
+    def mock_save():
+        save_called.append(True)
+
+    the_app.action_save_file = mock_save
+    the_app.save_or_continue(False, sample_dir / "notes.txt")
+    await pilot.pause()
+    assert not save_called
+    assert the_app.file == sample_dir / "notes.txt"
+    assert the_app.query_one(TextArea).text == "some notes\n"
+
+
 async def test_on_error_shows_dialog(app):
     the_app, pilot = app
     the_app.on_error(SimpleNamespace(prevent_default=lambda: None))

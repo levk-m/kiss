@@ -48,7 +48,7 @@ class SearchProvider(Provider):
                 yield Hit(
                     score=score,
                     match_display=matcher.highlight(command),
-                    command=partial(self.app.edit_file, path),
+                    command=partial(self.app.pre_edit_file, path),
                     help="Open file in KISS",
                 )
 

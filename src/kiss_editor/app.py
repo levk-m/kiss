@@ -1,5 +1,6 @@
 import os
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from functools import partial
 from os import W_OK
 from pathlib import Path
 from typing import Iterable
@@ -154,7 +155,7 @@ class Kiss(App):
 
     def _on_directory_tree_file_selected(self, event):
         path: Path = event.path
-        self.edit_file(path)
+        self.pre_edit_file(path)
         self._update_status()
 
     def _update_status(self) -> None:
@@ -179,20 +180,23 @@ class Kiss(App):
     def on_descendant_focus(self, event: events.DescendantFocus) -> None:
         self._update_status()
 
-    def edit_file(self, path):
+    def pre_edit_file(self, path):
         text_editor = self.query_one(KissArea)
         if text_editor.text != self.saved_text:
             self.app.push_screen(
-                YesNoDialog("Open another file", "Save this ?"), self.save_or_continue
+                YesNoDialog("Open another file", "Save this ?"),
+                partial(self.save_or_continue, path=path),
             )
             return
+        self.edit_file(path)
 
+    def edit_file(self, path):
         if self._is_img(path):
             return self._view_image(path)
         try:
             self.file = path
             config = self.config_data.get("kiss", {})
-
+            text_editor = self.query_one(KissArea)
             text_editor.display = True
             self.query_one(ImageViewer).display = False
             text_editor.text = self.file.read_text() if path.is_file() else ""
@@ -241,10 +245,10 @@ class Kiss(App):
             self.action_save_file()
         self.app.exit()
 
-    def save_or_continue(self, result):
+    def save_or_continue(self, result, path):
         if result:
             self.action_save_file()
-        return
+        self.edit_file(path)
 
     def action_help(self) -> None:
         self.app.push_screen(HelpDialog())
@@ -256,7 +260,7 @@ class Kiss(App):
         )
 
     def action_edit_config(self) -> None:
-        self.edit_file(Path(CONFIG_PATH))
+        self.pre_edit_file(Path(CONFIG_PATH))
 
     def on_text_area_changed(self, event):
         self._update_status()

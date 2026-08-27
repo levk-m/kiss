@@ -18,6 +18,9 @@ class FakeApp:
     def edit_file(self, path):
         pass
 
+    def pre_edit_file(self, path):
+        pass
+
 
 class FakeScreen(Screen):
     app = None
