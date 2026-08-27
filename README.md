@@ -190,7 +190,6 @@ the current application theme's palette, so the editor blends with the app UI.
 ## TODO
 
 - **Markdown viewer** — two modes: render and edit
-- *Create and save new files* 
 ---
 
 ## License
