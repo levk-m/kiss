@@ -324,14 +324,14 @@ To use:
 
     app.run()
     update_config_theme(app.theme)
-
-    github_version = get_github_version()
-    if github_version and need_update(local_version, github_version):
-        print(
-            f"A new version of kiss-editor is available: "
-            f"{local_version} -> {github_version}\n"
-            "To update, run: uv tool upgrade kiss-editor"
-        )
+    if app.config_data.get("kiss", {}).get("auto-update-check", True):
+        github_version = get_github_version()
+        if github_version and need_update(local_version, github_version):
+            print(
+                f"A new version of kiss-editor is available: "
+                f"{local_version} -> {github_version}\n"
+                "To update, run: uv tool upgrade kiss-editor"
+            )
 
 
 if __name__ == "__main__":

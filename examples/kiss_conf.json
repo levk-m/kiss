@@ -7,7 +7,8 @@
         "highlight_cursor_line": false,
         "start-screen": false,
         "indent-size": 4,
-        "auto-close-pairs": true
+        "auto-close-pairs": true,
+        "auto-update-check": true
     },
     "themes": {
         "_its_just_example_of_avaible_themes":"",

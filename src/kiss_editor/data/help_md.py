@@ -61,6 +61,7 @@ Changes take effect after restarting KISS.
 | `start-screen` | `false` | Show the splash screen on startup |
 | `indent-size` | `4` | Auto-indent width on newline; `0` disables |
 | `auto-close-pairs` | `true`| Auto-close `({[` and `'"` |
+| `auto-update-check` | `true` | Checking for updates after exiting the Kiss |
 
 ### Available application themes
 
