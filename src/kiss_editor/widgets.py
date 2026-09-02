@@ -108,6 +108,10 @@ class KissDirectoryTree(DirectoryTree):
         ".gz": "💨",
     }
 
+    def __init__(self, path, *, config=None, **kwargs):
+        super().__init__(path, **kwargs)
+        self.emoji_icons = config.get("kiss", {}).get("emoji-icons", True)
+
     def render_label(
         self, node: TreeNode[DirEntry], base_style: Style, style: Style
     ) -> Text:
@@ -120,7 +124,7 @@ class KissDirectoryTree(DirectoryTree):
         path = node.data.path
 
         if not path.is_dir():
-            icon = self.ICON_MAP.get(path.suffix, "📄")
+            icon = self.ICON_MAP.get(path.suffix, "📄") if self.emoji_icons else "📄"
             text = Text(icon, style=text.style) + text[1:]
 
         return text

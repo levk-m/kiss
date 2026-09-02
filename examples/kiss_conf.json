@@ -8,7 +8,8 @@
         "start-screen": false,
         "indent-size": 4,
         "auto-close-pairs": true,
-        "auto-update-check": true
+        "auto-update-check": true,
+        "emoji-icons": true
     },
     "themes": {
         "_its_just_example_of_avaible_themes":"",

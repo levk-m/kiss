@@ -47,6 +47,7 @@ Changes take effect after restarting KISS.
         "start-screen": false,
         "indent-size": 4,
         "auto-close-pairs": true
+        "emoji-icons": true
     }
 }
 ```
@@ -62,6 +63,7 @@ Changes take effect after restarting KISS.
 | `indent-size` | `4` | Auto-indent width on newline; `0` disables |
 | `auto-close-pairs` | `true`| Auto-close `({[` and `'"` |
 | `auto-update-check` | `true` | Checking for updates after exiting the Kiss |
+| `emoji-icons` | `true` | Colorful icons for directory tree |
 
 ### Available application themes
 

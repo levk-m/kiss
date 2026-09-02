@@ -122,7 +122,7 @@ class Kiss(App):
         with Horizontal():
             yield KissArea("", id="editor", config=self.config_data)
             yield ImageViewer(id="image-viewer")
-            yield KissDirectoryTree(self.folder)
+            yield KissDirectoryTree(self.folder, config=self.config_data)
         yield Footer()
 
     def on_mount(self):

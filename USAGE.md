@@ -71,6 +71,7 @@ A copyable example lives at `examples/kiss_conf.json`.
         "indent-size": 4,
         "auto-close-pairs": true,
         "auto-update-check": true
+        "emoji-icons": true
     }
 }
 ```
@@ -86,6 +87,7 @@ A copyable example lives at `examples/kiss_conf.json`.
 | `kiss.indent-size`           | `4`             | Auto-indent width; `0` disables             |
 | `auto-close-pairs`           | `true`          | Auto-close `({[` and `'"`                   |
 | `auto-update-check`          | `true`          | Checking for updates after exiting the Kiss |
+| `emoji-icons`                | `true`          | Colorful icons for directory tree           |
 
 ### Application themes
 
