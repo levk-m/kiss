@@ -330,7 +330,9 @@ To use:
             print(
                 f"A new version of kiss-editor is available: "
                 f"{local_version} -> {github_version}\n"
-                "To update, run: uv tool upgrade kiss-editor"
+                "To update, run: uv tool upgrade kiss-editor\n"
+                "If you don't have uv, install it:\n"
+                "  curl -fsSL https://raw.githubusercontent.com/levk-m/kiss/main/scripts/install.sh | bash"
             )
 
 

@@ -29,7 +29,7 @@ missing (see [TODO](#todo)).
 for unix systems:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/levk-m/kiss/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/levk-m/kiss/main/scripts/install.sh | bash
 ```
 
 via package managers:
