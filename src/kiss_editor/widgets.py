@@ -108,7 +108,7 @@ class KissDirectoryTree(DirectoryTree):
         ".gz": "💨",
     }
 
-    def __init__(self, path, *, config=None, **kwargs):
+    def __init__(self, path, *, config, **kwargs):
         super().__init__(path, **kwargs)
         self.emoji_icons = config.get("kiss", {}).get("emoji-icons", True)
 
