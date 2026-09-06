@@ -13,7 +13,7 @@ Open with `Ctrl+P`.
 - **Search** — fuzzy-match files and commands as you type.
 - **Theme** — switch the application theme on the fly.
 - **Help** — show this page.
-- **Edit config** — open `~/.kiss_conf.json`.
+- **Edit config** — open `~/.kiss_editor.ini`.
 
 ---
 
@@ -31,25 +31,22 @@ Sixel or iTerm), otherwise the image may look squished or be missing.
 
 ## Configuration
 
-KISS reads settings from `~/.kiss_conf.json` (JSON).
+KISS reads settings from `~/.kiss_editor.ini` (INI).
 
 Open the config with `Ctrl+O` or from the command palette (`Edit config`).
 Changes take effect after restarting KISS.
 
-```json
-{
-    "kiss": {
-        "theme": "tokyo-night",
-        "editor-theme": "dracula",
-        "show_line_numbers": true,
-        "soft_wrap": true,
-        "highlight_cursor_line": false,
-        "start-screen": false,
-        "indent-size": 4,
-        "auto-close-pairs": true
-        "emoji-icons": true
-    }
-}
+```ini
+[kiss]
+theme = tokyo-night
+editor-theme = dracula
+show_line_numbers = true
+soft_wrap = true
+highlight_cursor_line = false
+start-screen = false
+indent-size = 4
+auto-close-pairs = true
+emoji-icons = true
 ```
 
 | Option | Default | Description |

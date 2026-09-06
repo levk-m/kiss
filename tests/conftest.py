@@ -5,7 +5,7 @@ from kiss_editor.app import Kiss
 
 @pytest.fixture
 def config_path(tmp_path, monkeypatch):
-    path = tmp_path / "kiss_conf.json"
+    path = tmp_path / "kiss_editor.ini"
     monkeypatch.setattr("kiss_editor.config.CONFIG_PATH", str(path))
     monkeypatch.setattr("kiss_editor.app.CONFIG_PATH", str(path))
     return path
