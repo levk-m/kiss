@@ -75,7 +75,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 - **Go to line** (`Ctrl+G`) — enter a number, jump straight there
 - **Command palette** (`Ctrl+P`) — fuzzy-find files, switch themes
 - **Image viewer** — open images directly in the terminal (requires Kitty, Sixel or iTerm support)
-- **Config** — `~/.kiss_conf.json`, open with `Ctrl+O`
+- **Config** — `~/.kiss_editor.ini`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — ASCII logo on startup
 - **Update check** — notifies when a newer version is available on exit

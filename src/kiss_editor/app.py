@@ -127,7 +127,7 @@ class Kiss(App):
 
     def on_mount(self):
         conf_data = self.config_data.get("kiss")
-        self.theme = conf_data.get("theme", "tokyo-night")
+        self.theme = conf_data.get("theme", "rose-pine")
         if conf_data.get("start-screen", False):
             self.push_screen(StartScreen())
             self.set_timer(0.5, self.pop_screen)
@@ -323,7 +323,9 @@ To use:
             parser.error(f"Bad path -> {original}")
 
     app.run()
-    update_config_theme(app.theme)
+    curr_theme = app.config_data.get("kiss", {}).get("theme", "rose-pine")
+    if app.theme != curr_theme:
+        update_config_theme(app.theme)
     if app.config_data.get("kiss", {}).get("auto-update-check", True):
         github_version = get_github_version()
         if github_version and need_update(local_version, github_version):

@@ -90,3 +90,46 @@ def test_main_guard_runs_app(monkeypatch, tmp_path, config_path):
     )
     runpy.run_module("kiss_editor.app", run_name="__main__")
     assert calls["run_called"] is True
+
+
+@pytest.fixture
+def theme_rewrite_env(monkeypatch, tmp_path, config_path):
+    calls = {"theme": None}
+    monkeypatch.setattr(sys, "argv", ["kiss", str(tmp_path)])
+    monkeypatch.setattr("kiss_editor.app.App.run", lambda self: None)
+    monkeypatch.setattr("kiss_editor.app.get_github_version", lambda: None)
+    monkeypatch.setattr(
+        "kiss_editor.app.update_config_theme",
+        lambda theme: calls.__setitem__("theme", theme),
+    )
+    return calls
+
+
+def test_run_keeps_unchanged_theme(
+    monkeypatch, tmp_path, config_path, theme_rewrite_env
+):
+    config_path.write_text("[kiss]\ntheme = rose-pine\n")
+    real_init = app_module.Kiss.__init__
+
+    def fake_init(self, folder):
+        real_init(self, folder)
+        self.theme = "rose-pine"
+
+    monkeypatch.setattr(app_module.Kiss, "__init__", fake_init)
+    app_module.run()
+    assert theme_rewrite_env["theme"] is None
+
+
+def test_run_persists_changed_theme(
+    monkeypatch, tmp_path, config_path, theme_rewrite_env
+):
+    config_path.write_text("[kiss]\ntheme = rose-pine\n")
+    real_init = app_module.Kiss.__init__
+
+    def fake_init(self, folder):
+        real_init(self, folder)
+        self.theme = "nord"
+
+    monkeypatch.setattr(app_module.Kiss, "__init__", fake_init)
+    app_module.run()
+    assert theme_rewrite_env["theme"] == "nord"

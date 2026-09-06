@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -27,7 +26,7 @@ async def test_compose_mounts_expected_widgets(app):
 
 
 async def test_theme_from_config(config_path, tmp_path):
-    config_path.write_text(json.dumps({"kiss": {"theme": "nord"}}))
+    config_path.write_text("[kiss]\ntheme = nord\n")
     the_app = Kiss(folder=tmp_path)
     async with the_app.run_test():
         assert the_app.theme == "nord"
@@ -35,16 +34,11 @@ async def test_theme_from_config(config_path, tmp_path):
 
 async def test_mount_applies_editor_settings(config_path, tmp_path, sample_dir):
     config_path.write_text(
-        json.dumps(
-            {
-                "kiss": {
-                    "editor-theme": "monokai",
-                    "show_line_numbers": False,
-                    "soft_wrap": False,
-                    "highlight_cursor_line": True,
-                }
-            }
-        )
+        "[kiss]\n"
+        "editor-theme = monokai\n"
+        "show_line_numbers = false\n"
+        "soft_wrap = false\n"
+        "highlight_cursor_line = true\n"
     )
     the_app = Kiss(folder=tmp_path)
     async with the_app.run_test() as pilot:
@@ -60,7 +54,7 @@ async def test_mount_applies_editor_settings(config_path, tmp_path, sample_dir):
 
 
 async def test_on_mount_start_screen(config_path, tmp_path):
-    config_path.write_text(json.dumps({"kiss": {"start-screen": True}}))
+    config_path.write_text("[kiss]\nstart-screen = true\n")
     the_app = Kiss(folder=tmp_path)
     async with the_app.run_test():
         assert isinstance(the_app.screen, StartScreen)
@@ -327,11 +321,11 @@ async def test_action_help(app):
 
 async def test_action_edit_config(app, config_path):
     the_app, pilot = app
-    config_path.write_text(json.dumps({"kiss": {"theme": "nord"}}))
+    config_path.write_text("[kiss]\ntheme = nord\n")
     the_app.action_edit_config()
     await pilot.pause()
     assert the_app.file == config_path
-    assert the_app.query_one(TextArea).text == json.dumps({"kiss": {"theme": "nord"}})
+    assert the_app.query_one(TextArea).text == "[kiss]\ntheme = nord\n"
 
 
 async def test_action_command_palette(app):

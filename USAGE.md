@@ -49,42 +49,39 @@
 | `Ctrl+S`            | Save                              |
 | `Ctrl+P`            | Command palette (files, themes)   |
 | `Ctrl+H`            | Help dialog                       |
-| `Ctrl+O`            | Open config (`~/.kiss_conf.json`) |
+| `Ctrl+O`            | Open config (`~/.kiss_editor.ini`) |
 | `Ctrl+Q`            | Quit                              |
 
 ---
 
 ## Configuration
 
-JSON config file at `~/.kiss_conf.json`. Open it with `Ctrl+O` — changes take effect after restart.
-A copyable example lives at `examples/kiss_conf.json`.
+INI config file at `~/.kiss_editor.ini`. Open it with `Ctrl+O` — changes take effect after restart.
+A copyable example lives at `examples/kiss_conf.ini`.
 
-```json
-{
-    "kiss": {
-        "theme": "tokyo-night",
-        "editor-theme": "dracula",
-        "show_line_numbers": true,
-        "soft_wrap": true,
-        "highlight_cursor_line": false,
-        "start-screen": false,
-        "indent-size": 4,
-        "auto-close-pairs": true,
-        "auto-update-check": true
-        "emoji-icons": true
-    }
-}
+```ini
+[kiss]
+theme = tokyo-night
+editor-theme = dracula
+show_line_numbers = true
+soft_wrap = true
+highlight_cursor_line = false
+start-screen = false
+indent-size = 4
+auto-close-pairs = true
+auto-update-check = true
+emoji-icons = true
 ```
 
 | Key                          | Default         | Description                                 |
 | ---------------------------- | --------------- | ------------------------------------------- |
-| `kiss.theme`                 | `"tokyo-night"` | Application theme                           |
-| `kiss.editor-theme`          | `"css"`         | Syntax highlighting colors                  |
-| `kiss.show_line_numbers`     | `true`          | Show line numbers                           |
-| `kiss.soft_wrap`             | `true`          | Soft-wrap long lines                        |
-| `kiss.highlight_cursor_line` | `false`         | Highlight current line                      |
-| `kiss.start-screen`          | `false`         | Show splash screen on startup               |
-| `kiss.indent-size`           | `4`             | Auto-indent width; `0` disables             |
+| `theme`                      | `"tokyo-night"` | Application theme                           |
+| `editor-theme`               | `"css"`         | Syntax highlighting colors                  |
+| `show_line_numbers`          | `true`          | Show line numbers                           |
+| `soft_wrap`                  | `true`          | Soft-wrap long lines                        |
+| `highlight_cursor_line`      | `false`         | Highlight current line                      |
+| `start-screen`               | `false`         | Show splash screen on startup               |
+| `indent-size`                | `4`             | Auto-indent width; `0` disables             |
 | `auto-close-pairs`           | `true`          | Auto-close `({[` and `'"`                   |
 | `auto-update-check`          | `true`          | Checking for updates after exiting the Kiss |
 | `emoji-icons`                | `true`          | Colorful icons for directory tree           |
