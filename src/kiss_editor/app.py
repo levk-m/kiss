@@ -108,6 +108,9 @@ class Kiss(App):
             key="ctrl+o", action="edit_config", description="open config", show=False
         ),
         Binding(key="ctrl+g", action="goto_line", description="go to line", show=True),
+        Binding(
+            key="ctrl+t", action="template", description="paste template", show=True
+        ),
     ]
 
     def __init__(self, folder):
