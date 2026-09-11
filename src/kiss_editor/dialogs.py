@@ -244,7 +244,7 @@ class TemplateDialog(ModalScreen[str | None]):
             self.dismiss(code)
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
-        self.dismiss(self._templates[event.option.id])
+        self.dismiss(self._templates.get(event.option.id, ""))
 
     def action_list_up(self) -> None:
         self.query_one(OptionList).action_cursor_up()

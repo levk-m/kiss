@@ -2,8 +2,14 @@ from types import SimpleNamespace
 
 import kiss_editor.dialogs as dialogs
 from kiss_editor.data.help_md import HELP
-from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog, TextDialog
-from textual.widgets import Button, Input, Markdown, Static
+from kiss_editor.dialogs import (
+    ErrorDialog,
+    HelpDialog,
+    InputDialog,
+    TemplateDialog,
+    TextDialog,
+)
+from textual.widgets import Button, Input, Markdown, OptionList, Static
 
 
 def test_text_dialog_attributes():
@@ -117,3 +123,92 @@ async def test_input_dialog_escape_dismisses_with_none(app):
     await pilot.press("escape")
     await pilot.pause()
     assert results == [None]
+
+
+def _templates():
+    return {
+        "hello": 'print("hello")\n',
+        "class": "class Foo:\n\tpass\n",
+        "func": "def foo():\n    pass\n",
+    }
+
+
+async def test_template_dialog_renders_names(app):
+    the_app, pilot = app
+    await the_app.push_screen(TemplateDialog(_templates()))
+    await pilot.pause()
+    dialog = the_app.screen
+    options = dialog.query_one(OptionList)
+    assert [o.prompt for o in options.options] == ["hello", "class", "func"]
+    assert dialog.query_one(Input).has_focus
+
+
+async def test_template_dialog_filter_removes_options(app):
+    the_app, pilot = app
+    await the_app.push_screen(TemplateDialog(_templates()))
+    await pilot.pause()
+    dialog = the_app.screen
+    dialog.query_one(Input).value = "cl"
+    await pilot.pause()
+    options = dialog.query_one(OptionList)
+    assert [o.prompt for o in options.options] == ["class"]
+
+
+async def test_template_dialog_filter_empty_restores_all(app):
+    the_app, pilot = app
+    await the_app.push_screen(TemplateDialog(_templates()))
+    await pilot.pause()
+    dialog = the_app.screen
+    dialog.query_one(Input).value = "hello"
+    await pilot.pause()
+    dialog.query_one(Input).value = ""
+    await pilot.pause()
+    options = dialog.query_one(OptionList)
+    assert [o.prompt for o in options.options] == ["hello", "class", "func"]
+
+
+async def test_template_dialog_escape_dismisses_with_none(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(TemplateDialog(_templates()), results.append)
+    await pilot.pause()
+    await pilot.press("escape")
+    await pilot.pause()
+    assert results == [None]
+
+
+async def test_template_dialog_enter_dismisses_with_code(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(TemplateDialog(_templates()), results.append)
+    await pilot.pause()
+    await pilot.press("enter")
+    await pilot.pause()
+    assert results == ['print("hello")\n']
+
+
+async def test_template_dialog_option_selected_dismisses_with_code(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(TemplateDialog(_templates()), results.append)
+    await pilot.pause()
+    dialog = the_app.screen
+    dialog.query_one(OptionList).focus()
+    await pilot.pause()
+    await pilot.press("enter")
+    await pilot.pause()
+    assert results == ['print("hello")\n']
+
+
+async def test_template_dialog_enter_no_match_keeps_dialog_open(app):
+    the_app, pilot = app
+    results = []
+    the_app.push_screen(TemplateDialog(_templates()), results.append)
+    await pilot.pause()
+    dialog = the_app.screen
+    dialog.query_one(Input).value = "zzz"
+    await pilot.pause()
+    await pilot.press("enter")
+    await pilot.pause()
+    assert results == []
+    assert isinstance(the_app.screen, TemplateDialog)
