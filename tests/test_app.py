@@ -8,7 +8,7 @@ from textual.widgets import Footer, Input, TextArea
 from textual_image.widget import Image as ImageViewer
 
 from kiss_editor.app import Kiss, StatusBar
-from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog
+from kiss_editor.dialogs import ErrorDialog, HelpDialog, InputDialog, TemplateDialog
 from kiss_editor.widgets import KissDirectoryTree, StartScreen, YesNoDialog
 
 
@@ -657,3 +657,77 @@ async def test_quit_unsaved_image_file_no_dialog(app, tmp_path):
     await pilot.pause()
     assert exit_called
     assert not isinstance(the_app.screen, YesNoDialog)
+
+
+TEMPLATES = {"hello": 'print("hello")\n'}
+
+
+async def test_ctrl_t_binding_opens_template_dialog(app, monkeypatch):
+    the_app, pilot = app
+    monkeypatch.setattr("kiss_editor.app.load_templates", lambda: TEMPLATES)
+    the_app.query_one(TextArea).focus()
+    await pilot.pause()
+    await pilot.press("ctrl+t")
+    await pilot.pause()
+    assert isinstance(the_app.screen, TemplateDialog)
+
+
+async def test_action_insert_template_without_templates_shows_error(app, monkeypatch):
+    the_app, pilot = app
+    monkeypatch.setattr("kiss_editor.app.load_templates", lambda: {})
+    the_app.action_insert_template()
+    await pilot.pause()
+    assert isinstance(the_app.screen, ErrorDialog)
+
+
+async def test_ctrl_t_flow_inserts_template_at_cursor(app, monkeypatch):
+    the_app, pilot = app
+    monkeypatch.setattr("kiss_editor.app.load_templates", lambda: TEMPLATES)
+    editor = the_app.query_one(TextArea)
+    editor.text = "x\ny"
+    editor.move_cursor((1, 0))
+    editor.focus()
+    await pilot.pause()
+
+    await pilot.press("ctrl+t")
+    await pilot.pause()
+    assert isinstance(the_app.screen, TemplateDialog)
+
+    await pilot.press("enter")
+    await pilot.pause()
+
+    assert not isinstance(the_app.screen, TemplateDialog)
+    assert editor.text == 'x\nprint("hello")\ny'
+    assert editor.has_focus
+
+
+async def test_ctrl_t_escape_leaves_text_unchanged(app, monkeypatch):
+    the_app, pilot = app
+    monkeypatch.setattr("kiss_editor.app.load_templates", lambda: TEMPLATES)
+    editor = the_app.query_one(TextArea)
+    editor.text = "x\ny"
+    editor.focus()
+    await pilot.pause()
+
+    await pilot.press("ctrl+t")
+    await pilot.pause()
+    await pilot.press("escape")
+    await pilot.pause()
+
+    assert not isinstance(the_app.screen, TemplateDialog)
+    assert editor.text == "x\ny"
+
+
+async def test_insert_template_replaces_selection(app):
+    the_app, pilot = app
+    editor = the_app.query_one(TextArea)
+    editor.text = "abc"
+    editor.action_select_all()
+    editor.focus()
+    await pilot.pause()
+
+    the_app.insert_template(TEMPLATES["hello"])
+    await pilot.pause()
+
+    assert editor.text == 'print("hello")\n'
+    assert editor.has_focus

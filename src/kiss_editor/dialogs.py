@@ -5,8 +5,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Center, Vertical, VerticalScroll
 from textual.screen import ModalScreen
-from textual.widgets import Button, Input, Markdown, Static
+from textual.widgets import Button, Input, Markdown, OptionList, Static
 from textual.widgets._button import ButtonVariant
+from textual.widgets.option_list import Option
 
 from kiss_editor.data.help_md import HELP
 
@@ -165,3 +166,88 @@ class InputDialog(ModalScreen[str | None]):
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         self.dismiss(event.value)
+
+
+class TemplateDialog(ModalScreen[str | None]):
+    """List of templates; dismisses with the selected template code or None."""
+
+    DEFAULT_CSS = """
+    TemplateDialog {
+        align: center middle;
+    }
+
+    TemplateDialog > Vertical {
+        background: $boost;
+        width: 50%;
+        height: 60%;
+        border: solid $primary;
+        padding: 1 2;
+    }
+
+    TemplateDialog Input {
+        margin-bottom: 1;
+    }
+
+    TemplateDialog OptionList {
+        border: solid $panel;
+        height: 1fr;
+    }
+    """
+
+    BINDINGS = [
+        Binding("escape", "dismiss(None)", "", show=False),
+        Binding("up", "list_up", "", show=False),
+        Binding("down", "list_down", "", show=False),
+    ]
+
+    def __init__(
+        self, templates: dict[str, str], title: str = "Insert template"
+    ) -> None:
+        super().__init__()
+        self._templates = templates
+        self._title = title
+
+    def compose(self) -> ComposeResult:
+        with Vertical():
+            yield Static(self._title)
+            yield Input(placeholder="Filter by name…", id="filter")
+            yield OptionList(*(Option(name, id=name) for name in self._templates))
+
+    def on_mount(self) -> None:
+        self.query_one(OptionList).highlighted = 0
+        self.query_one("#filter").focus()
+
+    def _set_options(self, query: str) -> None:
+        option_list = self.query_one(OptionList)
+        option_list.clear_options()
+        option_list.add_options(
+            Option(name, id=name)
+            for name in self._templates
+            if query.lower() in name.lower()
+        )
+        option_list.highlighted = 0 if option_list.option_count else None
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        self._set_options(event.value.strip())
+
+    def _selected_code(self) -> str | None:
+        option_list = self.query_one(OptionList)
+        index = option_list.highlighted
+        if index is None:
+            return None
+        option = option_list.options[index]
+        return self._templates.get(option.id)
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        code = self._selected_code()
+        if code is not None:
+            self.dismiss(code)
+
+    def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
+        self.dismiss(self._templates.get(event.option.id, ""))
+
+    def action_list_up(self) -> None:
+        self.query_one(OptionList).action_cursor_up()
+
+    def action_list_down(self) -> None:
+        self.query_one(OptionList).action_cursor_down()

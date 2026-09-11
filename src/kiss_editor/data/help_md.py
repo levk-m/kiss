@@ -17,6 +17,24 @@ Open with `Ctrl+P`.
 
 ---
 
+## Templates
+
+Insert reusable code snippets with `Ctrl+T`: a picker lists the template
+names, type to filter, `Enter` inserts the code at the cursor (or replaces the
+selection).
+
+Templates live in `~/.kiss_templates.ini` as `name = code` pairs under the
+`[templates]` section. Multi-line values use indented continuation lines —
+note that their leading whitespace is stripped. A copyable example is at
+`examples/kiss_templates_example.ini`.
+
+```ini
+[templates]
+hello = print("hello")
+```
+
+---
+
 ## Viewing images
 
 KISS opens images directly in the terminal.
@@ -127,6 +145,7 @@ the current application theme's palette, so the editor blends with the app UI.
 | Tab / Shift+Tab | Focus next / previous element |
 | Ctrl+S | Save |
 | Ctrl+P | Command palette |
+| Ctrl+T | Insert template |
 | Ctrl+O | Open config |
 | Ctrl+H | Help |
 | Ctrl+Q | Quit |

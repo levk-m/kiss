@@ -74,6 +74,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 - **Syntax highlighting** — auto-detected from the file
 - **Go to line** (`Ctrl+G`) — enter a number, jump straight there
 - **Command palette** (`Ctrl+P`) — fuzzy-find files, switch themes
+- **Templates** (`Ctrl+T`) — insert reusable snippets from `~/.kiss_templates.ini` (see `examples/kiss_templates_example.ini`)
 - **Image viewer** — open images directly in the terminal (requires Kitty, Sixel or iTerm support)
 - **Config** — `~/.kiss_editor.ini`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
