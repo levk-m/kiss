@@ -1,50 +1,51 @@
 import kiss_editor.templates as templates
 
 
-def _set_path(monkeypatch, tmp_path, content=None, *, exists=True):
-    path = tmp_path / "templates.ini"
-    if content is not None:
-        path.write_text(content)
-    monkeypatch.setattr(templates, "FILE_PATH", str(path))
-    if not exists:
-        monkeypatch.setattr(templates.os.path, "exists", lambda p: False)
-    return path
+def _make_dir(monkeypatch, tmp_path, files=None):
+    d = tmp_path / "templates"
+    d.mkdir()
+    for name, content in (files or {}).items():
+        (d / name).write_text(content)
+    monkeypatch.setattr(templates, "DIR_PATH", str(d))
+    return d
 
 
-def test_load_templates_missing_file_returns_empty(monkeypatch, tmp_path):
-    _set_path(monkeypatch, tmp_path, exists=False)
+def test_load_templates_missing_dir_returns_empty(monkeypatch, tmp_path):
+    monkeypatch.setattr(templates, "DIR_PATH", str(tmp_path / "nope"))
     assert templates.load_templates() == {}
 
 
-def test_load_templates_no_section_returns_empty(monkeypatch, tmp_path):
-    _set_path(monkeypatch, tmp_path, "[other]\nkey = value\n")
-    assert templates.load_templates() == {}
-
-
-def test_load_templates_reads_section(monkeypatch, tmp_path):
-    _set_path(monkeypatch, tmp_path, "[templates]\nhello = print('hello')\n")
+def test_load_templates_reads_files(monkeypatch, tmp_path):
+    _make_dir(monkeypatch, tmp_path, {"hello.py": "print('hello')"})
     assert templates.load_templates() == {"hello": "print('hello')"}
+    assert isinstance(templates.load_templates()["hello"], str)
 
 
-def test_load_templates_multiline_value(monkeypatch, tmp_path):
-    _set_path(
+def test_load_templates_preserves_content(monkeypatch, tmp_path):
+    _make_dir(
         monkeypatch,
         tmp_path,
-        "[templates]\nfunc = def foo():\n    return 1\n",
+        {"func.py": "def foo():\n    return 1\n\n    # keep me\n"},
     )
-    assert templates.load_templates()["func"] == "def foo():\nreturn 1"
-
-
-def test_load_templates_percent_sign_is_literal(monkeypatch, tmp_path):
-    _set_path(
-        monkeypatch,
-        tmp_path,
-        "[templates]\nf = '%s' % name\n",
+    assert (
+        templates.load_templates()["func"]
+        == "def foo():\n    return 1\n\n    # keep me\n"
     )
-    assert templates.load_templates() == {"f": "'%s' % name"}
 
 
-def test_load_templates_bad_encoding_returns_empty(monkeypatch, tmp_path):
-    path = _set_path(monkeypatch, tmp_path)
-    path.write_bytes(b"\xff\xfb\xbe")
+def test_load_templates_ignores_subdirs_and_hidden(monkeypatch, tmp_path):
+    d = _make_dir(monkeypatch, tmp_path, {"a.py": "1", ".hidden": "2"})
+    (d / "sub").mkdir()
+    (d / "sub" / "b.py").write_text("3")
+    assert templates.load_templates() == {"a": "1"}
+
+
+def test_load_templates_skips_unreadable(monkeypatch, tmp_path):
+    d = _make_dir(monkeypatch, tmp_path)
+    (d / "bad.py").write_bytes(b"\xff\xfb\xbe")
     assert templates.load_templates() == {}
+
+
+def test_load_templates_sorted(monkeypatch, tmp_path):
+    _make_dir(monkeypatch, tmp_path, {"b.py": "1", "a.py": "2", "c.py": "3"})
+    assert list(templates.load_templates()) == ["a", "b", "c"]

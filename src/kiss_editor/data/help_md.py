@@ -23,14 +23,13 @@ Insert reusable code snippets with `Ctrl+T`: a picker lists the template
 names, type to filter, `Enter` inserts the code at the cursor (or replaces the
 selection).
 
-Templates live in `~/.kiss_templates.ini` as `name = code` pairs under the
-`[templates]` section. Multi-line values use indented continuation lines —
-note that their leading whitespace is stripped. A copyable example is at
-`examples/kiss_templates_example.ini`.
+Templates are plain files in `~/.kiss_templates/`. The file name (without the
+extension) becomes the template name, and the file content is the code —
+newlines and indentation are kept exactly as-is. A copyable example is at
+`examples/kiss_templates/hello.py`.
 
-```ini
-[templates]
-hello = print("hello")
+```python
+print("hello")
 ```
 
 ---

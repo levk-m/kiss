@@ -154,7 +154,7 @@ class Kiss(App):
             self.push_screen(
                 ErrorDialog(
                     "Templates",
-                    "No templates yet.\nAdd them to ~/.kiss_templates.ini",
+                    "No templates yet.\nAdd them to ~/.kiss_templates folder",
                 )
             )
             return

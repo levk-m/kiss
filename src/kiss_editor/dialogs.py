@@ -169,8 +169,6 @@ class InputDialog(ModalScreen[str | None]):
 
 
 class TemplateDialog(ModalScreen[str | None]):
-    """List of templates; dismisses with the selected template code or None."""
-
     DEFAULT_CSS = """
     TemplateDialog {
         align: center middle;

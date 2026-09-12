@@ -1,16 +1,18 @@
-import configparser
+from pathlib import Path
 import os
 
-FILE_PATH = os.path.expanduser("~/.kiss_templates.ini")
+DIR_PATH = os.path.expanduser("~/.kiss_templates")
 
 
 def load_templates():
-    config = configparser.ConfigParser(interpolation=None)
-    try:
-        if os.path.exists(FILE_PATH):
-            config.read(FILE_PATH)
-    except (configparser.Error, UnicodeDecodeError, OSError):
+    root = Path(DIR_PATH)
+    if not root.is_dir():
         return {}
-    if not config.has_section("templates"):
-        return {}
-    return dict(config["templates"])
+    res = {}
+    for path in sorted(root.iterdir()):
+        if path.is_file() and not path.name.startswith("."):
+            try:
+                res[path.stem] = path.read_text()
+            except (UnicodeDecodeError, OSError):
+                continue
+    return res
