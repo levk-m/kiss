@@ -15,6 +15,9 @@ class FakeApp:
     def action_edit_config(self):
         pass
 
+    def action_insert_template(self):
+        pass
+
     def edit_file(self, path):
         pass
 
@@ -45,7 +48,7 @@ def test_read_all_files_empty_dir(tmp_path):
 async def test_discover_yields_help_and_config(sample_dir):
     provider = make_provider(sample_dir)
     hits = [hit async for hit in provider.discover()]
-    assert [h.display for h in hits] == ["Help", "Edit config"]
+    assert [h.display for h in hits] == ["Help", "Edit config", "Insert template"]
 
 
 async def test_search_finds_file_and_builtins(sample_dir):

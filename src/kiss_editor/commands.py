@@ -38,6 +38,11 @@ class SearchProvider(Provider):
             command=partial(self.app.action_edit_config),
             help="Open KISS config",
         )
+        yield DiscoveryHit(
+            display="Insert template",
+            command=partial(self.app.action_insert_template),
+            help="Insert code template",
+        )
 
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
@@ -65,4 +70,11 @@ class SearchProvider(Provider):
                 match_display=matcher.highlight("Edit config"),
                 command=partial(self.app.action_edit_config),
                 help="Open KISS config",
+            )
+        if matcher.match("Insert template") > 0:
+            yield Hit(
+                score=0.5,
+                match_display=matcher.highlight("Insert template"),
+                command=partial(self.app.action_insert_template),
+                help="Insert code template",
             )

@@ -70,6 +70,14 @@ class Kiss(App):
         height: 1;
         background: $surface;
     }
+    #status-label {
+        border-left: solid $accent;
+        border-right: solid $accent;
+        padding: 0 1;
+        margin: 0 1;
+        color: $text;
+        height: 1;
+    }
     CommandPalette > Vertical {
         width: 70%;
         max-width: 90;
@@ -100,11 +108,11 @@ class Kiss(App):
         Binding(
             key="ctrl+s", action="save_file", description="Save new changes", show=False
         ),
-        Binding(key="ctrl+q", action="quit", description="quit"),
+        Binding(key="ctrl+q", action="quit", description="quit", show=False),
         Binding(
             key="ctrl+p", action="command_palette", description="commands", show=False
         ),
-        Binding(key="ctrl+h", action="help", description="help"),
+        Binding(key="ctrl+h", action="help", description="help", show=False),
         Binding(
             key="ctrl+o", action="edit_config", description="open config", show=False
         ),
