@@ -1,6 +1,8 @@
 from types import SimpleNamespace
 
-import kiss_editor.dialogs as dialogs
+from textual.widgets import Button, Input, Markdown, OptionList, Static
+
+from kiss_editor import dialogs
 from kiss_editor.data.help_md import HELP
 from kiss_editor.dialogs import (
     ErrorDialog,
@@ -9,7 +11,6 @@ from kiss_editor.dialogs import (
     TemplateDialog,
     TextDialog,
 )
-from textual.widgets import Button, Input, Markdown, OptionList, Static
 
 
 def test_text_dialog_attributes():

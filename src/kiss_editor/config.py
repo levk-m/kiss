@@ -45,9 +45,12 @@ def update_config_theme(theme_name: str):
             config.read(CONFIG_PATH)
         except (configparser.Error, UnicodeDecodeError, OSError):
             return
-    if config.has_section("kiss") and config.has_option("kiss", "theme"):
-        if config.get("kiss", "theme") == theme_name:
-            return
+    if (
+        config.has_section("kiss")
+        and config.has_option("kiss", "theme")
+        and config.get("kiss", "theme") == theme_name
+    ):
+        return
     if not config.has_section("kiss"):
         config.add_section("kiss")
     config.set("kiss", "theme", theme_name)

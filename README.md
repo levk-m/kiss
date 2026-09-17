@@ -58,7 +58,7 @@ uvx kiss-editor
 ## Usage
 
 ```
-kiss <file>         Edit a file
+kiss <file>         Edit a file or create new
 kiss <dir>          Browse a directory
 kiss .              Open current directory
 ```
@@ -79,7 +79,7 @@ word wrap, cursor line highlight. On top of that KISS adds:
 - **Config** — `~/.kiss_editor.ini`, open with `Ctrl+O`
 - **Help dialog** — `Ctrl+H`
 - **Splash screen** — ASCII logo on startup
-- **Update check** — notifies when a newer version is available on exit
+- **Update check** — notifies when a newer version is available on exit (takes about a second)
 - **Enter handling** — auto-indent to match the current line on newline
 
 ---

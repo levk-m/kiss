@@ -674,7 +674,7 @@ async def test_ctrl_t_binding_opens_template_dialog(app, monkeypatch):
 
 async def test_action_insert_template_without_templates_shows_error(app, monkeypatch):
     the_app, pilot = app
-    monkeypatch.setattr("kiss_editor.app.load_templates", lambda: {})
+    monkeypatch.setattr("kiss_editor.app.load_templates", dict)
     the_app.action_insert_template()
     await pilot.pause()
     assert isinstance(the_app.screen, ErrorDialog)

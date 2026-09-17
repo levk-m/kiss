@@ -1,4 +1,4 @@
-import kiss_editor.templates as templates
+from kiss_editor import templates
 
 
 def _make_dir(monkeypatch, tmp_path, files=None):

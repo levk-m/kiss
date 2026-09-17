@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from rich.style import Style
 from rich.text import Text
 from textual.app import ComposeResult
@@ -33,7 +35,7 @@ class StartScreen(Screen):
 
 
 class KissDirectoryTree(DirectoryTree):
-    ICON_MAP = {
+    ICON_MAP: ClassVar[dict[str, str]] = {
         ".py": "🐍",
         ".js": "🟨",  # maybe "💩" is better ? for ts too
         ".ts": "🟦",
@@ -138,7 +140,13 @@ class KissArea(TextArea):
         border: heavy $panel;
     }
     """
-    OPPOSITE = {"{": "}", "(": ")", "[": "]", "'": "'", '"': '"'}
+    OPPOSITE: ClassVar[dict[str, str]] = {
+        "{": "}",
+        "(": ")",
+        "[": "]",
+        "'": "'",
+        '"': '"',
+    }
 
     def __init__(self, text="", *, config, **kwargs) -> None:
         super().__init__(text, **kwargs)
@@ -245,7 +253,7 @@ class YesNoDialog(ModalScreen[bool]):
     }
     """
 
-    BINDINGS = [
+    BINDINGS: ClassVar[list[Binding]] = [
         Binding("left,up", "focus_previous", "", show=False),
         Binding("right,down", "focus_next", "", show=False),
         Binding("escape", "app.pop_screen", "", show=False),

@@ -1,4 +1,5 @@
 import webbrowser
+from typing import ClassVar
 
 from rich.text import TextType
 from textual.app import ComposeResult
@@ -43,7 +44,7 @@ class TextDialog(ModalScreen[None]):
     }
     """
 
-    BINDINGS = [
+    BINDINGS: ClassVar[list[Binding]] = [
         Binding("escape", "dismiss(None)", "", show=False),
     ]
 
@@ -113,7 +114,9 @@ class HelpDialog(ModalScreen[None]):
         }
     """
 
-    BINDINGS = [Binding("escape, ctrl+h", "dismiss(None)", "", show=True)]
+    BINDINGS: ClassVar[list[Binding]] = [
+        Binding("escape, ctrl+h", "dismiss(None)", "", show=True)
+    ]
 
     def compose(self) -> ComposeResult:
         with Vertical():
@@ -150,7 +153,9 @@ class InputDialog(ModalScreen[str | None]):
     }
     """
 
-    BINDINGS = [Binding("escape", "dismiss(None)", "", show=False)]
+    BINDINGS: ClassVar[list[Binding]] = [
+        Binding("escape", "dismiss(None)", "", show=False)
+    ]
 
     def __init__(self, title: str) -> None:
         super().__init__()
@@ -192,7 +197,7 @@ class TemplateDialog(ModalScreen[str | None]):
     }
     """
 
-    BINDINGS = [
+    BINDINGS: ClassVar[list[Binding]] = [
         Binding("escape", "dismiss(None)", "", show=False),
         Binding("up", "list_up", "", show=False),
         Binding("down", "list_down", "", show=False),

@@ -1,9 +1,10 @@
 import os
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from collections.abc import Iterable
 from functools import partial
 from os import W_OK
 from pathlib import Path
-from typing import Iterable
+from typing import ClassVar
 
 from textual import events
 from textual.app import App, ComposeResult, SystemCommand
@@ -104,7 +105,7 @@ class Kiss(App):
 
     COMMANDS = App.COMMANDS | {SearchProvider}
 
-    BINDINGS = [
+    BINDINGS: ClassVar[list[Binding]] = [
         Binding(
             key="ctrl+s", action="save_file", description="Save new changes", show=False
         ),
@@ -251,7 +252,7 @@ class Kiss(App):
                 "highlight_cursor_line", False
             )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.app.push_screen(ErrorDialog("Error", f"Couldn't open this file: {e}"))
 
     def action_save_file(self):
@@ -315,7 +316,7 @@ class Kiss(App):
             self.query_one(KissArea).display = False
             viewer.display = True
             self._update_status()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.app.push_screen(ErrorDialog("Error", f"Couldn't open this image: {e}"))
 
 

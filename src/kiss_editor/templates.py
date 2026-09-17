@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 DIR_PATH = os.path.expanduser("~/.kiss_templates")
 
